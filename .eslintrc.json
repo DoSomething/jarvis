@@ -1,0 +1,7 @@
+{
+  "extends": "@dosomething/eslint-config",
+  "rules": {
+    "strict": "off",
+    "no-param-reassign": "off"
+  }
+}

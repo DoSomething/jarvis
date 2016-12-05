@@ -1,0 +1,11 @@
+# Config
+.env
+
+# Logs
+*.log
+
+# Node
+node_modules/
+
+# Misc
+.DS_Store

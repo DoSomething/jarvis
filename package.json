@@ -1,0 +1,32 @@
+{
+  "name": "jarvis",
+  "version": "1.0.0",
+  "description": "DoSomething.org's natural language interface.",
+  "scripts": {
+    "test": "mocha",
+    "start": "foreman start",
+    "lint": "eslint --ext=.js leaders followers lib util db config",
+    "strict": "use-strict leaders followers lib util db config"
+  },
+  "author": "DoSomething.org",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "forky": "^0.3.0",
+    "keypunch": "^1.0.3",
+    "mongoose": "^4.6.8",
+    "stathat": "^0.0.8"
+  },
+  "devDependencies": {
+    "@dosomething/eslint-config": "^1.1.1",
+    "chai": "^3.5.0",
+    "dotenv": "^2.0.0",
+    "eslint": "^3.10.2",
+    "mocha": "^3.1.2",
+    "nock": "^9.0.2",
+    "supertest": "^2.0.1",
+    "use-strict-cli": "^1.0.1"
+  }
+}
