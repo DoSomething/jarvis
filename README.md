@@ -39,6 +39,10 @@ You can lint all files with `npm run lint`.
 ## Strict Mode
 All files should `"use script"`. It can be easy to forget this, so use `npm run strict` to automatically add it to all files which don't already have it.
 
+## Database
+Use `npm run seed` to setup test nodes, flow & keyword.
+Make sure your .env is pointing to the correct database. 
+
 # Heroku Setup
 All instances of this service live in a dedicated Heroku pipeline. The pipeline is configured to host review apps, staging application & production application.
 

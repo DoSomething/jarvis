@@ -29,3 +29,6 @@ const schema = new mongo.Schema({
 const Entry = mongo.mongoose.model('Entry', schema);
 
 module.exports = Entry;
+
+// Schema Dependencies
+require('./Flow');

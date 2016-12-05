@@ -40,3 +40,7 @@ schema.methods.run = function (message, conversation) {
 const Node = mongo.mongoose.model('Node', schema);
 
 module.exports = Node;
+
+// Schema Dependencies
+require('./NodePrint');
+require('./NodeConditional');

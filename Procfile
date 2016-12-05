@@ -1,2 +1,1 @@
-web: node leaders/web.js
-
+web: node leaders/server.js

@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = ['mobile_commons'];
+module.exports = ['mobile_commons', 'http'];

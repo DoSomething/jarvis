@@ -2,6 +2,7 @@
 
 const mongo = require('../mongo');
 const Entry = require('./Entry');
+const Flow = require('./Flow');
 
 const schema = new mongo.Schema({
   /**

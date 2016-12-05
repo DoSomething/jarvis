@@ -23,7 +23,28 @@ describe('verify user schema', function() {
   });
 });
 
-describe('verify user methods', function() {
+describe('verify user functionality', function() {
+  it ('should return a new user', function() {
+    const userId = '5807ace57f43c2045904eda9';
+
+    return User.findOrCreate(userId).then((user) => {
+      assert.isDefined(user, 'New user returned');
+      assert.equal(user._id.toString(), userId, 'User Id matches');
+    });
+  });
+
+  it ('should find the user', function() {
+    const userId = '5807ace57f43c2045904eda9';
+    const user = new User({_id: userId});
+
+    return user.save()
+    .then(() => User.findOrCreate(userId))
+    .then((user) => {
+      assert.isDefined(user, 'Existing user returned');
+      assert.equal(user._id.toString(), userId, 'User Id matches');
+    });
+  });
+
   it ('should return a northstar profile', function() {
     const user = new User({_id: '5807ace57f43c2045904eda9'});
 

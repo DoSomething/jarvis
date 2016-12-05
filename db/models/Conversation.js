@@ -33,6 +33,7 @@ const schema = new mongo.Schema({
   /**
    * Misc. object for storing data to enable analysis & visualization later.
    * WARN: Do not use this in any production queries.
+   * TODO: Remove in favor of events?
    */
   analytics: mongo.Schema.Types.Mixed,
 }, {
@@ -64,11 +65,11 @@ schema.statics.populationFields = [
     },
   },
   {
-    path: 'user'
+    path: 'user',
   },
   {
-    path: 'pointer'
-  }
+    path: 'pointer',
+  },
 ];
 
 /**
@@ -77,10 +78,26 @@ schema.statics.populationFields = [
  * @return {Promise}
  */
 schema.statics.getUsersActiveConversation = function (userId) {
-  return this.findOne({user: userId})
-  .sort({updatedAt: -1})
-  .populate(populatedFields)
+  return this.findOne({ user: userId })
+  .sort({ updatedAt: -1 })
+  .populate(this.populationFields)
   .exec();
+};
+
+/**
+ * Create a new conversation for the given user & entry.
+ * @param  {User} user
+ * @param  {Entry} entry
+ * @return {Promise}
+ */
+schema.statics.createFromEntry = function (user, entry) {
+  const conversation = new this({
+    user,
+    entry,
+  });
+
+  return conversation.save()
+  .then(convo => this.populate(convo, this.populationFields)).catch(console.error);
 };
 
 /**
@@ -94,15 +111,19 @@ schema.methods.updatePointer = function (message) {
     if (!this.pointer) {
       this.pointer = this.entry.flow.start;
       resolve();
-    }
-    else {
+    } else {
       this.pointer.run(message, this).then(resolve);
     }
   });
 
   return update.then(this.save);
-}
+};
 
 const Conversation = mongo.mongoose.model('Conversation', schema);
 
 module.exports = Conversation;
+
+// Schema Dependencies
+require('./User');
+require('./Entry')
+require('./Node');

@@ -32,6 +32,20 @@ const schema = new mongo.Schema({
 });
 
 /**
+ * Find or create a user based on the northstar id.
+ * @param  {String} northstarId
+ * @return {Promise}
+ */
+schema.statics.findOrCreate = function (northstarId) {
+  return this.findOne({ _id: northstarId }).exec()
+  .then((user) => {
+    if (user) return user;
+
+    return new this({ _id: northstarId }).save();
+  });
+};
+
+/**
  * Get the Northstar user associated with this model.
  * @return {Promise}
  */

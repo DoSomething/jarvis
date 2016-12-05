@@ -6,7 +6,8 @@
     "test": "mocha",
     "start": "foreman start",
     "lint": "eslint --ext=.js leaders followers lib util db config",
-    "strict": "use-strict leaders followers lib util db config"
+    "strict": "use-strict leaders followers lib util db config",
+    "seed": "node ./db/seed.js"
   },
   "author": "DoSomething.org",
   "license": "MIT",

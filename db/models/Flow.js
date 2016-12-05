@@ -37,3 +37,6 @@ const schema = new mongo.Schema({
 const Flow = mongo.mongoose.model('Flow', schema);
 
 module.exports = Flow;
+
+// Schema Dependencies
+require('./Node');

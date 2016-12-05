@@ -7,7 +7,7 @@ services:
       - mongo
 
     environment:
-      - MONGODB_URI=mongodb://mongo_1:27017/gambit-
+      - MONGODB_URI=mongodb://mongo_1:27017/jarvis
     volumes:
       - ./:/app
       - /app/node_modules
