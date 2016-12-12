@@ -39,6 +39,7 @@ const choices = new ConditionalNode({
 
 const introduction = new PrintNode({
   title: 'Buzzwords - The Introduction',
+  // eslint-disable-next-line max-len
   message: 'Leverage agile frameworks to provide a robust synopsis for high level overviews. (Reply NEXT)',
   next: choices,
 });

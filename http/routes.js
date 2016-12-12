@@ -3,18 +3,13 @@ const express = require('express');
 const router = express.Router();
 
 const apiRouter = express.Router({ mergeParams: true });
-const interfaceRouter = express.Router({ mergeParams: true });
 const recieveRouter = express.Router({ mergeParams: true });
 
 module.exports = () => {
-
-  // Don't enable the test reciever on production.
-  if (process.env.NODE_ENV !== 'production') {
-    recieveRouter.use('/default', require('./controllers/Reciever'));
-  }
-
-  router.use('/', interfaceRouter);
   router.use('/api', apiRouter);
+
+  recieveRouter.use('/default', require('./controllers/Reciever'));
+  recieveRouter.use('/twilio', require('./controllers/Twilio'));
   router.use('/recieve', recieveRouter);
 
   return router;

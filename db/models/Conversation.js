@@ -7,7 +7,7 @@ const schema = new mongo.Schema({
    * The Gambit user attached to this conversation
    */
   user: {
-    type: mongo.mongoose.Schema.Types.ObjectId,
+    type: mongo.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
@@ -16,7 +16,7 @@ const schema = new mongo.Schema({
    * The entry point for this conversation.
    */
   entry: {
-    type: mongo.mongoose.Schema.Types.ObjectId,
+    type: mongo.Schema.Types.ObjectId,
     ref: 'Entry',
     required: true,
   },
@@ -25,7 +25,7 @@ const schema = new mongo.Schema({
    * The current point in the flow for this conversation
    */
   pointer: {
-    type: mongo.mongoose.Schema.Types.ObjectId,
+    type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
     default: null,
   },
@@ -97,7 +97,7 @@ schema.statics.createFromEntry = function (user, entry) {
   });
 
   return conversation.save()
-  .then(convo => this.populate(convo, this.populationFields)).catch(console.error);
+  .then(convo => this.populate(convo, this.populationFields));
 };
 
 /**
@@ -125,5 +125,5 @@ module.exports = Conversation;
 
 // Schema Dependencies
 require('./User');
-require('./Entry')
+require('./Entry');
 require('./Node');

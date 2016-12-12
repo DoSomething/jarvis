@@ -3,10 +3,23 @@ require('./root');
 const assert = require('chai').assert;
 const Node = require('../db/models/Node');
 const Flow = require('../db/models/Flow');
+const Message = require('../db/models/Message');
+
+const testMessage = new Message({
+  response: {
+    media: ['test.jpg']
+  },
+  platform: 'test',
+  client: {
+    type: 'user',
+    id: 'abcd'
+  },
+  conversationId: '1234'
+});
 
 describe('verify flow schema', function() {
   it ('should have a title, start & nodes', function() {
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const flow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -19,7 +32,7 @@ describe('verify flow schema', function() {
   });
 
   it ('should have a timestamp', function() {
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const flow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -35,7 +48,7 @@ describe('verify flow schema', function() {
 
 describe('verify flow validation', function() {
   it ('should not save a flow missing nodes', function() {
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const flow = new Flow({
       title: 'Test flow',
     });
@@ -48,14 +61,27 @@ describe('verify flow validation', function() {
 
 describe('verify flow functionality', function() {
   it ('should populate the nodes', function() {
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const message = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'user',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+
+    const testNode = new Node({title: 'Test node', message});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
       nodes: [testNode]
     });
 
-    return testNode.save()
+    return message.save()
+    .then(testNode.save)
     .then(testFlow.save)
     .then(() => Flow.findOne({_id: testFlow._id}).populate('start nodes').exec())
     .then((fl) => {

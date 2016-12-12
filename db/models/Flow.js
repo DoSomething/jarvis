@@ -16,7 +16,7 @@ const schema = new mongo.Schema({
    * The Node to start on when executing this flow.
    */
   start: {
-    type: mongo.mongoose.Schema.Types.ObjectId,
+    type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
   },
 
@@ -25,7 +25,7 @@ const schema = new mongo.Schema({
    */
   nodes: [
     {
-      type: mongo.mongoose.Schema.Types.ObjectId,
+      type: mongo.Schema.Types.ObjectId,
       ref: 'Node',
       index: true,
     },

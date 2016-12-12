@@ -1,6 +1,7 @@
 'use strict';
 
 const mongo = require('../mongo');
+const Message = require('./Message');
 
 const schema = new mongo.Schema({
   /**
@@ -17,7 +18,8 @@ const schema = new mongo.Schema({
    * Message this node will output.
    */
   message: {
-    type: String,
+    type: mongo.Schema.Types.ObjectId,
+    ref: 'Message',
     required: true,
   },
 }, {

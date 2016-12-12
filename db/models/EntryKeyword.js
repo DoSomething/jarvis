@@ -2,7 +2,6 @@
 
 const mongo = require('../mongo');
 const Entry = require('./Entry');
-const Flow = require('./Flow');
 
 const schema = new mongo.Schema({
   /**
@@ -35,3 +34,6 @@ schema.statics.findByKeyword = function (keyword) {
 const KeywordEntry = Entry.discriminator('entry-keyword', schema);
 
 module.exports = KeywordEntry;
+
+// Flow Dependencies
+require('./Flow');

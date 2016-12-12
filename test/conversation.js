@@ -13,7 +13,18 @@ const clients = require('../config/clients');
 
 describe('verify conversation schema', function() {
   it ('should have a user, entry and pointer', function() {
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testMessage = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -32,7 +43,18 @@ describe('verify conversation schema', function() {
   });
 
   it ('should have a timestamp', function() {
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testMessage = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -66,7 +88,18 @@ describe('verify conversation validation', function() {
 
 describe('verify conversation virtuals', function() {
   it ('should have messages populated', function() {
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testMessage = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -103,7 +136,18 @@ describe('verify conversation virtuals', function() {
 describe('verify conversation functionality', function() {
   it ('should populate the conversation', function() {
     const testUser = new User();
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testMessage = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -118,6 +162,7 @@ describe('verify conversation functionality', function() {
     });
 
     return testUser.save()
+    .then(testMessage.save)
     .then(testNode.save)
     .then(testFlow.save)
     .then(testEntry.save)
@@ -133,7 +178,18 @@ describe('verify conversation functionality', function() {
 
   it ('should create a new conversation from entry', function() {
     const testUser = new User();
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testMessage = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -142,6 +198,7 @@ describe('verify conversation functionality', function() {
     const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'test'});
 
     return testUser.save()
+    .then(testMessage.save)
     .then(testNode.save)
     .then(testFlow.save)
     .then(testEntry.save)
@@ -155,7 +212,18 @@ describe('verify conversation functionality', function() {
 
   it ('should find the most recent conversation', function() {
     const testUser = new User();
-    const testNode = new Node({title: 'Test node', message: 'hi'});
+    const testMessage = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode = new Node({title: 'Test node', message: testMessage});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -185,8 +253,19 @@ describe('verify conversation functionality', function() {
   });
 
   it ('should update the null pointer', function() {
-    const testNode2 = new Node({title: 'Test node', message: 'hi'});
-    const testNode1 = new PrintNode({title: 'Test node', message: 'hi', next: testNode2});
+    const testMessage = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode2 = new Node({title: 'Test node', message: testMessage});
+    const testNode1 = new PrintNode({title: 'Test node', message: testMessage, next: testNode2});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode1,
@@ -227,8 +306,19 @@ describe('verify conversation functionality', function() {
   });
 
   it ('should update the defined pointer', function() {
-    const testNode2 = new Node({title: 'Test node', message: 'hi'});
-    const testNode1 = new PrintNode({title: 'Test node', message: 'hi', next: testNode2});
+    const testMessage = new Message({
+      response: {
+        media: ['test.jpg']
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode2 = new Node({title: 'Test node', message: testMessage});
+    const testNode1 = new PrintNode({title: 'Test node', message: testMessage, next: testNode2});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode1,

@@ -4,22 +4,18 @@ const helpers = require('../../util/helpers');
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
+const twilio = require('../../lib/twilio');
+const northstar = require('../../lib/northstar');
+
 const User = require('../../db/Models/User');
 const Message = require('../../db/models/Message');
 
-/**
- * Create a Message for the given text & user.
- *
- * @param  {String} text
- * @param  {User} user
- * @return Promise
- */
 function createMessage(text, user) {
   const message = new Message({
     response: {
       text,
     },
-    platform: 'test',
+    platform: 'twilio',
     client: {
       type: 'user',
       id: user._id,
@@ -30,28 +26,25 @@ function createMessage(text, user) {
 }
 
 router.post('/', (req, res) => {
-  const northstarId = req.body.northstar_id;
-  const text = req.body.text;
-
-  if (!northstarId) return res.status(400).send('Missing Northstar Id');
-  if (!text) return res.status(400).send('Missing text');
-
   const scope = {
     user: {},
     message: {},
-    platform: 'test'
+    platform: 'twilio'
   };
 
-  User.findOrCreate(northstarId)
-  .then(user => {
+  northstar
+  .findUserByMobile(req.body.From.replace('+1', ''))
+  .then(nsUser => User.findOrCreate(nsUser.data.id))
+  .then((user) => {
     scope.user = user;
-    return createMessage(text, user);
+    return createMessage(req.body.Body, user);
   })
   .then((message) => {
     scope.message = message;
     return helpers.routeRequest(scope);
   })
-  .then(message => res.send(message.response.text))
+  .then(message => twilio.sendMessage(message, scope.user))
+  .then(() => res.send('ok'))
   .catch(console.error);
 });
 

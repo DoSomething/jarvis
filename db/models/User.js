@@ -41,7 +41,7 @@ schema.statics.findOrCreate = function (northstarId) {
   .then((user) => {
     if (user) return user;
 
-    return new this({ _id: northstarId }).save();
+    return new this({ _id: northstarId }).save().catch(console.error);
   });
 };
 

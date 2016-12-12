@@ -17,7 +17,7 @@ const schema = new mongo.Schema({
    * The flow this Entry should link to.
    */
   flow: {
-    type: mongo.mongoose.Schema.Types.ObjectId,
+    type: mongo.Schema.Types.ObjectId,
     ref: 'Flow',
     required: true,
   },

@@ -18,7 +18,7 @@ const schema = new mongo.Schema({
    * If the evaluation passes, goto this node.
    */
   pass: {
-    type: mongo.mongoose.Schema.Types.ObjectId,
+    type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
     required: true,
   },
@@ -27,7 +27,7 @@ const schema = new mongo.Schema({
    * If the evaluation fails, goto this node.
    */
   fail: {
-    type: mongo.mongoose.Schema.Types.ObjectId,
+    type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
     required: true,
   },

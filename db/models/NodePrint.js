@@ -8,7 +8,7 @@ const schema = new mongo.Schema({
    * The node that always comes next.
    */
   next: {
-    type: mongo.mongoose.Schema.Types.ObjectId,
+    type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
     required: true,
   },
