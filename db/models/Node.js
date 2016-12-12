@@ -1,7 +1,6 @@
 'use strict';
 
 const mongo = require('../mongo');
-const Message = require('./Message');
 
 const schema = new mongo.Schema({
   /**
@@ -46,3 +45,4 @@ module.exports = Node;
 // Schema Dependencies
 require('./NodePrint');
 require('./NodeConditional');
+require('./Message');

@@ -25,6 +25,7 @@ function createMessage(text, user) {
   return message.lowercaseResponse();
 }
 
+// TODO: Implement const middleware = twilio.webhook(process.env.TWILIO_AUTH_TOKEN);
 router.post('/', (req, res) => {
   const scope = {
     user: {},

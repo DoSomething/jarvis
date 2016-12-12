@@ -23,20 +23,14 @@ module.exports = {
    * @param  {Object} scope Should contain a Message & User.
    * @return {Promise}
    */
-  routeRequest: (scope) => {
-    return Keyword.findByKeyword(scope.message.response.text)
-    .then((keyword) => {
-      return keyword ?
+  routeRequest: (scope) => Keyword.findByKeyword(scope.message.response.text)
+    .then((keyword) => (keyword ?
         Conversation.createFromEntry(scope.user, keyword) :
-        Conversation.getUsersActiveConversation(scope.user.id);
-    })
-    .then((conversation) => {
-      return scope.message.attachConversation(conversation)
-      .then(message => conversation.updatePointer(message))
-    })
+        Conversation.getUsersActiveConversation(scope.user.id)))
+    .then((conversation) => scope.message.attachConversation(conversation)
+      .then(message => conversation.updatePointer(message)))
     .then(conversation => Conversation.populate(conversation, 'pointer'))
-    .then(conversation => this.getNodeMessage(scope.platform, conversation));
-  },
+    .then(conversation => this.getNodeMessage(scope.platform, conversation)),
 
   /**
    * Get the Message to return for the given platform
@@ -55,5 +49,5 @@ module.exports = {
     });
 
     return message.save();
-  }
-}
+  },
+};
