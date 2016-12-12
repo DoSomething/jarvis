@@ -1,3 +1,5 @@
+'use strict';
+
 const Keyword = require('../db/models/EntryKeyword');
 const Conversation = require('../db/models/Conversation');
 const Message = require('../db/models/Message');

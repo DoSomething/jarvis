@@ -8,9 +8,6 @@
     "lint": "eslint --ext=.js leaders followers lib util db config",
     "strict": "use-strict leaders followers lib util db config",
     "seed": "node ./db/seed.js",
-    "build": "webpack",
-    "build-prod": "webpack -p --colors",
-    "build-dev": "webpack -d --colors --watch"
   },
   "author": "DoSomething.org",
   "license": "MIT",
@@ -18,33 +15,22 @@
     "@dosomething/forge": "^6.7.8",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
-    "client-sessions": "^0.7.0",
     "express": "^4.14.0",
     "forky": "^0.3.0",
-    "jsonwebtoken": "^7.2.1",
     "keypunch": "^1.0.3",
     "mongoose": "^4.6.8",
-    "radium": "^0.18.1",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "react-router": "^3.0.0",
     "stathat": "^0.0.8",
     "superagent": "^3.1.0",
     "twilio": "^2.11.1"
   },
   "devDependencies": {
     "@dosomething/eslint-config": "^1.1.1",
-    "babel-core": "^6.18.2",
-    "babel-loader": "^6.2.8",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-preset-react": "^6.16.0",
     "chai": "^3.5.0",
     "dotenv": "^2.0.0",
     "eslint": "^3.10.2",
     "mocha": "^3.1.2",
     "nock": "^9.0.2",
     "supertest": "^2.0.1",
-    "use-strict-cli": "^1.0.1",
-    "webpack": "^1.13.3"
+    "use-strict-cli": "^1.0.1"
   }
 }
