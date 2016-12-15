@@ -25,17 +25,16 @@ function createMessage(text, user) {
   return message.lowercaseResponse();
 }
 
-// TODO: Implement const middleware = twilio.webhook(process.env.TWILIO_AUTH_TOKEN);
-router.post('/', (req, res) => {
+router.post('/', twilio.middleware, (req, res) => {
   const scope = {
     user: {},
     message: {},
     platform: 'twilio'
   };
 
-  northstar
-  .findUserByMobile(req.body.From.replace('+1', ''))
-  .then(nsUser => User.findOrCreate(nsUser.data.id))
+  const mobile = req.body.From.replace('+1', '');
+
+  User.findOrCreate(mobile, 'mobile')
   .then((user) => {
     scope.user = user;
     return createMessage(req.body.Body, user);

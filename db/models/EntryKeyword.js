@@ -2,17 +2,29 @@
 
 const mongo = require('../mongo');
 const Entry = require('./Entry');
+const protocols = require('../../config/protocols');
 
 const schema = new mongo.Schema({
   /**
-   * Every keyword is unique and
-   * automatically formatted to be lowercase + trimmed.
+   * Every keyword is formatted
+   * to be lowercase + trimmed.
    */
   keyword: {
     type: String,
     required: true,
-    unique: true,
-    index: true,
+    lowercase: true,
+    trim: true,
+  },
+
+  /**
+   * Every keyword must be tied
+   * to a specific protocol.
+   */
+  protocol: {
+    type: String,
+    default: 'user',
+    enum: protocols,
+    required: true,
     lowercase: true,
     trim: true,
   },
@@ -21,15 +33,18 @@ const schema = new mongo.Schema({
 });
 
 /**
- * Find a KeywordEntry by the given keyword and
- * automatically populate the flow.
+ * Find a KeywordEntry by the given keyword and protocol.
+ * Additionally, automatically populate the flow.
  *
- * @param  {String} keyword
+ * @param {String} keyword
+ * @param {String} protocol
  * @return {Promise}
  */
-schema.statics.findByKeyword = function (keyword) {
-  return this.findOne({ keyword }).populate('flow').exec();
+schema.statics.findByKeyword = function (keyword, protocol) {
+  return this.findOne({ keyword, protocol }).populate('flow').exec();
 };
+
+schema.index({ keyword: 1, protocol: 1 }, { unique: true });
 
 const KeywordEntry = Entry.discriminator('entry-keyword', schema);
 

@@ -9,8 +9,10 @@ describe('verify user schema', function() {
 
     assert.isDefined(user.profile, 'has profile');
     assert.isDefined(user.profile.scienceSleuthDonationCount, 'has Science Sleuth donation count');
+    assert.isDefined(user.session, 'has session');
     assert.strictEqual(user.profile.scienceSleuthDonationCount['2015'], 0, 'Science Sleuth 2015 donation count equals 0');
     assert.strictEqual(user.profile.scienceSleuthDonationCount['2016'], 0, 'Science Sleuth 2015 donation count equals 0');
+    assert.equal(user.protocol, 'user', 'default protocol is set to user');
   });
 
   it ('should have a timestamp', function() {
@@ -23,11 +25,21 @@ describe('verify user schema', function() {
   });
 });
 
+describe('verify user validation', function() {
+  it ('should not save an invalid protocol', function() {
+    const user = new User({protocol: 'LOL THIS IS FAKE'});
+
+    return user.save().catch((err) => {
+      assert.isDefined(err, 'User validation threw an error');
+    });
+  });
+});
+
 describe('verify user functionality', function() {
   it ('should return a new user', function() {
     const userId = '5807ace57f43c2045904eda9';
 
-    return User.findOrCreate(userId).then((user) => {
+    return User.findOrCreate(userId, '_id').then((user) => {
       assert.isDefined(user, 'New user returned');
       assert.equal(user._id.toString(), userId, 'User Id matches');
     });
@@ -38,7 +50,7 @@ describe('verify user functionality', function() {
     const user = new User({_id: userId});
 
     return user.save()
-    .then(() => User.findOrCreate(userId))
+    .then(() => User.findOrCreate(userId, '_id'))
     .then((user) => {
       assert.isDefined(user, 'Existing user returned');
       assert.equal(user._id.toString(), userId, 'User Id matches');

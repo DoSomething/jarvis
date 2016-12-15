@@ -1,10 +1,30 @@
 'use strict';
 
+const console = require('keypunch');
 const Keyword = require('../db/models/EntryKeyword');
 const Conversation = require('../db/models/Conversation');
 const Message = require('../db/models/Message');
 
 module.exports = {
+  /**
+   * Get the Message to return for the given platform
+   * and conversation.
+   * @param  {String} platform
+   * @param  {conversation} conversation
+   * @return {Promise}
+   */
+  getNodeMessage: (platform, conversation) => {
+    const originalMessage = conversation.pointer.message;
+    const message = new Message({
+      platform,
+      response: originalMessage.response,
+      client: originalMessage.client,
+      conversationId: conversation._id,
+    });
+
+    return message.save();
+  },
+
   /**
    * Route the given message to the proper conversation
    * and get the message which should be replied back
@@ -23,31 +43,18 @@ module.exports = {
    * @param  {Object} scope Should contain a Message & User.
    * @return {Promise}
    */
-  routeRequest: (scope) => Keyword.findByKeyword(scope.message.response.text)
+  routeRequest: (scope) => Keyword.findByKeyword(scope.message.response.text, scope.user.protocol)
     .then((keyword) => (keyword ?
         Conversation.createFromEntry(scope.user, keyword) :
         Conversation.getUsersActiveConversation(scope.user.id)))
     .then((conversation) => scope.message.attachConversation(conversation)
       .then(message => conversation.updatePointer(message)))
-    .then(conversation => Conversation.populate(conversation, 'pointer'))
-    .then(conversation => this.getNodeMessage(scope.platform, conversation)),
-
-  /**
-   * Get the Message to return for the given platform
-   * and conversation.
-   * @param  {String} platform
-   * @param  {conversation} conversation
-   * @return {Promise}
-   */
-  getNodeMessage: (platform, conversation) => {
-    const originalMessage = this.message;
-    const message = new Message({
-      platform,
-      response: originalMessage.response,
-      client: originalMessage.client,
-      conversationId: conversation._id,
-    });
-
-    return message.save();
-  },
+    .then(conversation => Conversation.populate(conversation, {
+      path: 'pointer',
+      populate: {
+        path: 'message',
+      },
+    }))
+    .then(conversation => module.exports.getNodeMessage(scope.platform, conversation))
+    .catch(err => console.error(err)),
 };

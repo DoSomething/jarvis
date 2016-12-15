@@ -9,14 +9,6 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const sessions = require('client-sessions');
-app.use(sessions({
-  cookieName: 'jarvis',
-  secret: process.env.COOKIE_SECRET, // should be a large unguessable string
-  duration: 24 * 60 * 60 * 1000,
-  activeDuration: 5 * 60 * 1000,
-}));
-
 app.use('/public', express.static('./interface/dist'));
 app.use('/public/forge', express.static('./node_modules/@dosomething/forge/dist'));
 

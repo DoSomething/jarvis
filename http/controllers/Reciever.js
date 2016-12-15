@@ -4,6 +4,8 @@ const helpers = require('../../util/helpers');
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
+const northstar = require('../../lib/northstar');
+
 const User = require('../../db/Models/User');
 const Message = require('../../db/models/Message');
 
@@ -30,11 +32,11 @@ function createMessage(text, user) {
 }
 
 router.post('/', (req, res) => {
-  const northstarId = req.body.northstar_id;
   const text = req.body.text;
+  const email = req.body.email;
 
-  if (!northstarId) return res.status(400).send('Missing Northstar Id');
   if (!text) return res.status(400).send('Missing text');
+  if (!email) return res.status(400).send('Missing email');
 
   const scope = {
     user: {},
@@ -42,8 +44,8 @@ router.post('/', (req, res) => {
     platform: 'test'
   };
 
-  User.findOrCreate(northstarId)
-  .then(user => {
+  User.findOrCreate(email, 'email')
+  .then((user) => {
     scope.user = user;
     return createMessage(text, user);
   })
@@ -52,7 +54,7 @@ router.post('/', (req, res) => {
     return helpers.routeRequest(scope);
   })
   .then(message => res.send(message.response.text))
-  .catch(console.error);
+  .catch((err) => console.error(err));
 });
 
 module.exports = router;

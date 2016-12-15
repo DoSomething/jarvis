@@ -7,7 +7,7 @@
     "start": "foreman start",
     "lint": "eslint --ext=.js leaders followers lib util db config",
     "strict": "use-strict leaders followers lib util db config",
-    "seed": "node ./db/seed.js"
+    "seed": "node ./db/buzzwordsSeed.js"
   },
   "author": "DoSomething.org",
   "license": "MIT",
@@ -15,6 +15,7 @@
     "@dosomething/forge": "^6.7.8",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
+    "botkit": "^0.4.3",
     "express": "^4.14.0",
     "forky": "^0.3.0",
     "keypunch": "^1.0.3",
