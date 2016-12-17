@@ -61,6 +61,7 @@ describe('verify protocol node validation', function() {
 
 describe('verify protocol node functionality', function() {
   it ('should move pointer correctly for non admin', function() {
+    this.timeout(5000);
     const adminMessage = new Message({
       response: {
         text: 'admin'
@@ -123,7 +124,7 @@ describe('verify protocol node functionality', function() {
     .then(() => Conversation.createFromEntry(user, testEntry))
     .then(convo => {
       convo.pointer = protocolNode;
-      return convo.save();
+      return convo.save().catch(err => console.error(err));
     })
     .then(convo => Conversation.populate(convo, Conversation.populationFields))
     .then(convo => convo.updatePointer(adminMessage))
