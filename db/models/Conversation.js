@@ -105,9 +105,9 @@ schema.statics.createFromEntry = function (user, entry) {
  * Load the pointer for this conversation
  * @return {Promise}
  */
-schema.methods.loadPointer = function() {
-  return Node.findOne({_id: this.pointer}).exec();
-}
+schema.methods.loadPointer = function () {
+  return Node.findOne({ _id: this.pointer }).exec();
+};
 
 /**
  * Update the conversation pointer based on the supplied message.
@@ -120,7 +120,7 @@ schema.methods.updatePointer = function (message) {
   .then((pointer) => {
     if (!pointer) {
       this.pointer = this.entry.flow.start;
-      return;
+      return true;
     }
 
     return pointer.run(message, this);
@@ -132,7 +132,7 @@ schema.methods.updatePointer = function (message) {
 
     return this;
   });
-}
+};
 
 const Conversation = mongo.mongoose.model('Conversation', schema);
 

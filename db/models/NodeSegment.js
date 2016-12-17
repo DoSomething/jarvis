@@ -30,9 +30,7 @@ const schema = new mongo.Schema({
   },
 });
 
-schema.virtual('hop').get(() => {
-  return true;
-});
+schema.virtual('hop').get(() => true);
 
 /**
  * Update the conversation pointer to the next node.

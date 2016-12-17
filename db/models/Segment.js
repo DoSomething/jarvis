@@ -1,7 +1,6 @@
 'use strict';
 
 const mongo = require('../mongo');
-const northstar = require('../../lib/northstar');
 
 const schema = new mongo.Schema({
   /**
@@ -23,7 +22,7 @@ const schema = new mongo.Schema({
     lowercase: true,
     trim: true,
     index: true,
-  }
+  },
 }, {
   timestamps: {
     updatedAt: true,

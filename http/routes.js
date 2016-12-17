@@ -8,6 +8,7 @@ const recieveRouter = express.Router({ mergeParams: true });
 module.exports = () => {
   router.use('/api', apiRouter);
 
+  //TODO: Disable on production
   recieveRouter.use('/default', require('./controllers/Reciever'));
   recieveRouter.use('/twilio', require('./controllers/Twilio'));
   router.use('/recieve', recieveRouter);

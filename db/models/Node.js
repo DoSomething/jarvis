@@ -29,9 +29,7 @@ const schema = new mongo.Schema({
   },
 });
 
-schema.virtual('hop').get(() => {
-  return false;
-});
+schema.virtual('hop').get(() => false);
 
 /**
  * Based on the users message, modify the conversation pointer & run functionality.
