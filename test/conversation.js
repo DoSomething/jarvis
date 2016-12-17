@@ -373,7 +373,7 @@ describe('verify conversation functionality', function() {
       conversationId: '1234'
     });
     const testNode2 = new Node({title: 'Test node', message: testMessage});
-    const testNode1 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode2, segmentName: 'test segment'});
+    const testNode1 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode2, segmentName: 'test segment', hop: true});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode1,
@@ -426,8 +426,8 @@ describe('verify conversation functionality', function() {
       conversationId: '1234'
     });
     const testNode3 = new Node({title: 'Test node', message: testMessage});
-    const testNode2 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode3, segmentName: 'test segment'});
-    const testNode1 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode2, segmentName: 'test segment'});
+    const testNode2 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode3, segmentName: 'test segment', hop: true});
+    const testNode1 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode2, segmentName: 'test segment', hop: true});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode1,

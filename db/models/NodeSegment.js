@@ -25,12 +25,7 @@ const schema = new mongo.Schema({
   },
 }, {
   discriminatorKey: 'node',
-  virtuals: {
-    toObject: true,
-  },
 });
-
-schema.virtual('hop').get(() => true);
 
 /**
  * Update the conversation pointer to the next node.

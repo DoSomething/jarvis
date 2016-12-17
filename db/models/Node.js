@@ -21,15 +21,20 @@ const schema = new mongo.Schema({
     ref: 'Message',
     required: true,
   },
+
+  /**
+   * Indicate if the flow should hop
+   * over this node.
+   */
+  hop: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 }, {
   discriminatorKey: 'node',
   timestamps: true,
-  virtuals: {
-    toObject: true,
-  },
 });
-
-schema.virtual('hop').get(() => false);
 
 /**
  * Based on the users message, modify the conversation pointer & run functionality.

@@ -35,17 +35,6 @@ describe('verify print node schema', function() {
     assert.isDefined(node2.message, 'Node message is defined');
     assert.isDefined(node2.next, 'Next node is defined');
   });
-
-  it('should have a virtual hop property', function() {
-    const node = new PrintNode({
-      title: 'Test title',
-      message: testMessage,
-      next: null,
-    });
-
-    assert.isBoolean(node.hop, 'Has hop boolean');
-    assert.equal(node.hop, false, 'Hop is set to false');
-  });
 });
 
 describe('verify print node validation', function() {

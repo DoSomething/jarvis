@@ -35,14 +35,14 @@ describe('verify node schema', function() {
     });
   });
 
-  it('should have a virtual hop property', function() {
+  it('should have a hop property', function() {
     const node = new Node({
       title: 'Test title',
       message: testMessage,
     });
 
-    assert.isBoolean(node.hop, 'Has hop boolean');
-    assert.equal(node.hop, false, 'Hop is set to false');
+    assert.isBoolean(node.hop, 'Has default hop boolean');
+    assert.equal(node.hop, false, 'Default hop is set to false');
   });
 });
 

@@ -39,18 +39,6 @@ describe('verify segment node schema', function() {
     assert.isDefined(node2.next, 'Next node is defined');
     assert.isString(node2.segmentName, 'Segment is defined');
   });
-
-  it('should have a virtual hop property', function() {
-    const node = new SegmentNode({
-      title: 'Test title',
-      message: null,
-      segmentName: 'Test segment',
-      next: null,
-    });
-
-    assert.isBoolean(node.hop, 'Has hop boolean');
-    assert.equal(node.hop, true, 'Hop is set to false');
-  });
 });
 
 describe('verify segment node validation', function() {
