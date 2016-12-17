@@ -1,4 +1,5 @@
-require('dotenv').config();
+if (!process.env.TRAVIS) require('dotenv').config();
+
 if (process.env.MONGODB_TEST_URI) process.env.MONGODB_URI = process.env.MONGODB_TEST_URI;
 
 process.env.LOG_LEVEL = 4;
