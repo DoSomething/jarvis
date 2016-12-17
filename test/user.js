@@ -52,9 +52,7 @@ describe('verify user functionality', function() {
         data: {
           _id: userId,
         }
-      });
-
-    nock(process.env.NORTHSTAR_URI)
+      })
       .post(`/v1/users/`, {
         _id: userId,
       })
@@ -78,9 +76,7 @@ describe('verify user functionality', function() {
       .get('/v2/auth/token')
       .reply(200, {
         access_token: '12345'
-      });
-
-    nock(process.env.NORTHSTAR_URI)
+      })
       .get(`/v1/users/_id/${userId}`)
       .reply(200, {
         data: {
@@ -103,9 +99,7 @@ describe('verify user functionality', function() {
       .get('/v2/auth/token')
       .reply(200, {
         access_token: '12345'
-      });
-
-    nock(process.env.NORTHSTAR_URI)
+      })
       .get(`/v1/users/id/${user._id}`)
       .reply(200, {
         data: {

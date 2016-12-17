@@ -106,9 +106,7 @@ describe('verify protocol node functionality', function() {
       .get('/v2/auth/token')
       .reply(200, {
         access_token: '12345'
-      });
-
-    nock(process.env.NORTHSTAR_URI)
+      })
       .get(`/v1/users/id/${user._id}`)
       .reply(200, {
         data: {
@@ -133,7 +131,8 @@ describe('verify protocol node functionality', function() {
       assert.isDefined(convo.pointer, 'pointer is deinfed');
       assert.equal(convo.pointer.toString(), node2._id.toString(), 'pointer shifted correctly');
       assert.equal(convo.user.protocol, originalProtocol, 'protocol didnt change');
-    });
+    })
+    .catch(err => console.error(err));
   });
 
   it ('should move pointer correctly for an admin', function() {
@@ -180,9 +179,7 @@ describe('verify protocol node functionality', function() {
       .get('/v2/auth/token')
       .reply(200, {
         access_token: '12345'
-      });
-
-    nock(process.env.NORTHSTAR_URI)
+      })
       .get(`/v1/users/id/${user._id}`)
       .reply(200, {
         data: {
