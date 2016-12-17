@@ -1,6 +1,7 @@
 require('./root');
 
 const assert = require('chai').assert;
+const nock = require('nock');
 const ProtocolNode = require('../db/models/NodeProtocol');
 const Node = require('../db/models/Node');
 const Message = require('../db/models/Message');
@@ -101,6 +102,20 @@ describe('verify protocol node functionality', function() {
     });
     const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'protocol'});
 
+    nock(process.env.NORTHSTAR_URI)
+      .get('/v2/auth/token')
+      .reply(200, {
+        access_token: '12345'
+      });
+
+    nock(process.env.NORTHSTAR_URI)
+      .get(`/v1/users/id/${user._id}`)
+      .reply(200, {
+        data: {
+          role: 'user',
+        }
+      });
+
     return node1.save()
     .then(node2.save)
     .then(user.save)
@@ -160,6 +175,20 @@ describe('verify protocol node functionality', function() {
       nodes: [protocolNode, node1, node2]
     });
     const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'protocol'});
+
+    nock(process.env.NORTHSTAR_URI)
+      .get('/v2/auth/token')
+      .reply(200, {
+        access_token: '12345'
+      });
+
+    nock(process.env.NORTHSTAR_URI)
+      .get(`/v1/users/id/${user._id}`)
+      .reply(200, {
+        data: {
+          role: 'admin',
+        }
+      });
 
     return node1.save()
     .then(node2.save)

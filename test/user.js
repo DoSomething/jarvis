@@ -1,6 +1,7 @@
 require('./root');
 
 const assert = require('chai').assert;
+const nock = require('nock');
 const User = require('../db/models/User');
 
 describe('verify user schema', function() {
@@ -39,6 +40,30 @@ describe('verify user functionality', function() {
   it ('should return a new user', function() {
     const userId = '5807ace57f43c2045904eda9';
 
+    nock(process.env.NORTHSTAR_URI)
+      .get('/v2/auth/token')
+      .reply(200, {
+        access_token: '12345'
+      });
+
+    nock(process.env.NORTHSTAR_URI)
+      .get(`/v1/users/_id/${userId}`)
+      .reply(200, {
+        data: {
+          _id: userId,
+        }
+      });
+
+    nock(process.env.NORTHSTAR_URI)
+      .post(`/v1/users/`, {
+        _id: userId,
+      })
+      .reply(200, {
+        data: {
+          _id: userId,
+        }
+      });
+
     return User.findOrCreate(userId, '_id').then((user) => {
       assert.isDefined(user, 'New user returned');
       assert.equal(user._id.toString(), userId, 'User Id matches');
@@ -48,6 +73,20 @@ describe('verify user functionality', function() {
   it ('should find the user', function() {
     const userId = '5807ace57f43c2045904eda9';
     const user = new User({_id: userId});
+
+    nock(process.env.NORTHSTAR_URI)
+      .get('/v2/auth/token')
+      .reply(200, {
+        access_token: '12345'
+      });
+
+    nock(process.env.NORTHSTAR_URI)
+      .get(`/v1/users/_id/${userId}`)
+      .reply(200, {
+        data: {
+          _id: userId,
+        }
+      });
 
     return user.save()
     .then(() => User.findOrCreate(userId, '_id'))
@@ -59,6 +98,20 @@ describe('verify user functionality', function() {
 
   it ('should return a northstar profile', function() {
     const user = new User({_id: '5807ace57f43c2045904eda9'});
+
+    nock(process.env.NORTHSTAR_URI)
+      .get('/v2/auth/token')
+      .reply(200, {
+        access_token: '12345'
+      });
+
+    nock(process.env.NORTHSTAR_URI)
+      .get(`/v1/users/id/${user._id}`)
+      .reply(200, {
+        data: {
+          email: 'jkent@dosomething.org',
+        }
+      });
 
     return user.getNorthstarUser().then((nsUser) => {
       assert.isDefined(nsUser.data, 'has data');
