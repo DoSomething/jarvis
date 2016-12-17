@@ -4,23 +4,10 @@ const assert = require('chai').assert;
 const Node = require('../db/models/Node');
 const Flow = require('../db/models/Flow');
 const KeywordEntry = require('../db/models/EntryKeyword');
-const Message = require('../db/models/Message');
-
-const testMessage = new Message({
-  response: {
-    media: ['test.jpg']
-  },
-  platform: 'test',
-  client: {
-    type: 'jarvis',
-    id: 'abcd'
-  },
-  conversationId: '1234'
-});
 
 describe('verify entry keyword schema', function() {
   it ('should have a title, keyword & flow', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -38,7 +25,7 @@ describe('verify entry keyword schema', function() {
 
 describe('verify entry keyword validation', function() {
   it ('should not save an entry missing a keyword', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -52,7 +39,7 @@ describe('verify entry keyword validation', function() {
   });
 
   it ('should not save an entry using an invliad protocol', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -66,7 +53,7 @@ describe('verify entry keyword validation', function() {
   });
 
   it ('should save the same keyword for two different protocols', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -85,7 +72,7 @@ describe('verify entry keyword validation', function() {
   });
 
   it ('should not save the same keyword for the same protocols', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -106,7 +93,7 @@ describe('verify entry keyword validation', function() {
 
 describe('verify entry keyword functionality', function() {
   it ('should find the proper keyword', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,

@@ -3,30 +3,17 @@ require('./root');
 const assert = require('chai').assert;
 const PrintNode = require('../db/models/NodePrint');
 const Node = require('../db/models/Node');
-const Message = require('../db/models/Message');
-
-const testMessage = new Message({
-  response: {
-    media: ['test.jpg']
-  },
-  platform: 'test',
-  client: {
-    type: 'jarvis',
-    id: 'abcd'
-  },
-  conversationId: '1234'
-});
 
 describe('verify print node schema', function() {
   it ('should have a title, message & next', function() {
     const node1 = new Node({
       title: 'Test title 1',
-      message: testMessage,
+      message: {text: 'test'},
     });
 
     const node2 = new PrintNode({
       title: 'Test title 2',
-      message: testMessage,
+      message: {text: 'test'},
       next: node1
     });
 
@@ -41,7 +28,7 @@ describe('verify print node validation', function() {
   it ('should not save a node missing next', function() {
     const node = new PrintNode({
       title: 'Test title 2',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     return node.save().catch((err) => {
@@ -54,12 +41,12 @@ describe('verify print node functionality', function() {
   it ('should move pointer correctly', function() {
     const node1 = new Node({
       title: 'Test title 1',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const node2 = new PrintNode({
       title: 'Test title 2',
-      message: testMessage,
+      message: {text: 'test'},
       next: node1
     });
 

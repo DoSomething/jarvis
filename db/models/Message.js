@@ -26,6 +26,7 @@ const schema = new mongo.Schema({
         type: String,
         lowercase: true,
         trim: true,
+        default: [],
       },
     ],
   },
@@ -59,7 +60,7 @@ const schema = new mongo.Schema({
     /**
      * The unique identifier for this client.
      * If its a user client, use the user id.
-     * If its an application, use the application id.
+     * If its an application, use the app name.
      */
     id: {
       type: String,

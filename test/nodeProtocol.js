@@ -10,28 +10,16 @@ const User = require('../db/models/User');
 const Flow = require('../db/models/Flow');
 const KeywordEntry = require('../db/models/EntryKeyword');
 
-const testMessage = new Message({
-  response: {
-    media: ['test.jpg']
-  },
-  platform: 'test',
-  client: {
-    type: 'jarvis',
-    id: 'abcd'
-  },
-  conversationId: '1234'
-});
-
 describe('verify protocol node schema', function() {
   it ('should have a title, message & protocol metadata', function() {
     const node1 = new Node({
       title: 'Test title 1',
-      message: testMessage,
+      message: {text: 'test'},
     });
 
     const node2 = new ProtocolNode({
       title: 'Test title 2',
-      message: testMessage,
+      message: {text: 'test'},
       success: node1,
       failed: node1,
     });
@@ -50,7 +38,7 @@ describe('verify protocol node validation', function() {
   it ('should not save a node missing success or failed', function() {
     const node = new ProtocolNode({
       title: 'Test title 2',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     return node.save().catch((err) => {
@@ -61,8 +49,6 @@ describe('verify protocol node validation', function() {
 
 describe('verify protocol node functionality', function() {
   it ('should move pointer correctly for non admin', function() {
-    this.timeout(5000);
-
     const adminMessage = new Message({
       response: {
         text: 'admin'
@@ -77,17 +63,17 @@ describe('verify protocol node functionality', function() {
 
     const node1 = new Node({
       title: 'Succesful protocol change',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const node2 = new Node({
       title: 'Failed protocol change',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const protocolNode = new ProtocolNode({
       title: 'Test title 3',
-      message: testMessage,
+      message: {text: 'test'},
       protocol: 'admin',
       requiredRole: ['admin'],
       success: node1,
@@ -151,17 +137,17 @@ describe('verify protocol node functionality', function() {
 
     const node1 = new Node({
       title: 'Succesful protocol change',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const node2 = new Node({
       title: 'Failed protocol change',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const protocolNode = new ProtocolNode({
       title: 'Test title 3',
-      message: testMessage,
+      message: {text: 'test'},
       protocol: 'admin',
       requiredRole: ['admin'],
       success: node1,

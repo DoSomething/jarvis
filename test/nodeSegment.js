@@ -4,31 +4,18 @@ const assert = require('chai').assert;
 const SegmentNode = require('../db/models/NodeSegment');
 const Segment = require('../db/models/Segment');
 const Node = require('../db/models/Node');
-const Message = require('../db/models/Message');
 const User = require('../db/models/User');
-
-const testMessage = new Message({
-  response: {
-    text: 'test message'
-  },
-  platform: 'test',
-  client: {
-    type: 'jarvis',
-    id: 'abcd'
-  },
-  conversationId: '1234'
-});
 
 describe('verify segment node schema', function() {
   it ('should have a title, message & next', function() {
     const node1 = new Node({
       title: 'Test title 1',
-      message: testMessage,
+      message: {text: 'test'},
     });
 
     const node2 = new SegmentNode({
       title: 'Test title 2',
-      message: null,
+      message: {text: 'test'},
       segmentName: 'Test segment',
       next: node1,
     });
@@ -45,7 +32,7 @@ describe('verify segment node validation', function() {
   it ('should not save a node missing segment name', function() {
     const node = new SegmentNode({
       title: 'Test title 2',
-      message: testMessage,
+      message: {text: 'test'},
       next: null,
     });
 
@@ -61,12 +48,12 @@ describe('verify segment node functionality', function() {
 
     const node1 = new Node({
       title: 'Test title 1',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const node2 = new SegmentNode({
       title: 'Test title 2',
-      message: testMessage,
+      message: {text: 'test'},
       next: node1,
       segmentName: 'test'
     });
@@ -84,12 +71,12 @@ describe('verify segment node functionality', function() {
 
     const node1 = new Node({
       title: 'Test title 1',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const node2 = new SegmentNode({
       title: 'Test title 2',
-      message: testMessage,
+      message: {text: 'test'},
       next: node1,
       segmentName: 'test'
     });

@@ -17,9 +17,26 @@ const schema = new mongo.Schema({
    * Message this node will output.
    */
   message: {
-    type: mongo.Schema.Types.ObjectId,
-    ref: 'Message',
-    required: true,
+    /**
+     * Text to output.
+     */
+    text: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+
+    /**
+     * Should contain strings of Media URI's.
+     */
+    media: [
+      {
+        type: String,
+        lowercase: true,
+        trim: true,
+        default: [],
+      },
+    ],
   },
 
   /**

@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = ['user', 'jarvis', 'quicksilver', 'support'];
+module.exports = ['user', 'application'];

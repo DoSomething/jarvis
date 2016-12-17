@@ -5,33 +5,21 @@ const ConditionalNode = require('../db/models/NodeConditional');
 const Node = require('../db/models/Node');
 const Message = require('../db/models/Message');
 
-const testMessage = new Message({
-  response: {
-    media: ['test.jpg']
-  },
-  platform: 'test',
-  client: {
-    type: 'jarvis',
-    id: 'abcd'
-  },
-  conversationId: '1234'
-});
-
 describe('verify conditional node schema', function() {
   it ('should have a title, message & conditional fields', function() {
     const pass = new Node({
       title: 'Test pass',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const fail = new Node({
       title: 'Test fail',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const condition = new ConditionalNode({
       title: 'Test condition',
-      message: testMessage,
+      message: {text: 'test'},
       testFor: 'test',
       pass,
       fail,
@@ -50,7 +38,7 @@ describe('verify conditional node validation', function() {
   it ('should not save a node missing conditions', function() {
     const node = new ConditionalNode({
       title: 'Test title 2',
-      message: testMessage,
+      message: {text: 'test'},
     });
 
     return node.save().catch((err) => {
@@ -63,24 +51,35 @@ describe('verify conditional node functionality', function() {
   it ('should move pointer correctly', function() {
     const pass = new Node({
       title: 'Test pass',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const fail = new Node({
       title: 'Test fail',
-      message: testMessage
+      message: {text: 'test'}
     });
 
     const condition = new ConditionalNode({
       title: 'Test condition',
-      message: testMessage,
+      message: {text: 'test'},
       testFor: 'test',
       pass,
       fail,
     });
 
+    const message = new Message({
+      response: {
+        text: 'test',
+      },
+      platform: 'test',
+      client: {
+        type: 'user',
+        id: 'test',
+      }
+    });
+
     return condition.save()
-    .then(() => condition.run({response: {text: 'test'}}, {}))
+    .then(() => condition.run(message, {}))
     .then((conversation) => {
       assert.isDefined(conversation.pointer, 'pointer is deinfed');
       assert.equal(conversation.pointer._id, pass._id, 'pointer shifted correctly');

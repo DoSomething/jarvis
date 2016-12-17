@@ -14,11 +14,13 @@ module.exports = {
    * @return {Promise}
    */
   getNodeMessage: (platform, conversation) => {
-    const originalMessage = conversation.pointer.message;
     const message = new Message({
       platform,
-      response: originalMessage.response,
-      client: originalMessage.client,
+      response: conversation.pointer.message,
+      client: {
+        type: 'application',
+        id: 'jarvis',
+      },
       conversationId: conversation._id,
     });
 
@@ -49,12 +51,7 @@ module.exports = {
         Conversation.getUsersActiveConversation(scope.user.id)))
     .then((conversation) => scope.message.attachConversation(conversation)
       .then(message => conversation.updatePointer(message)))
-    .then(conversation => Conversation.populate(conversation, {
-      path: 'pointer',
-      populate: {
-        path: 'message',
-      },
-    }))
+    .then(conversation => Conversation.populate(conversation, 'pointer'))
     .then(conversation => module.exports.getNodeMessage(scope.platform, conversation))
     .catch(err => console.error(err)),
 };

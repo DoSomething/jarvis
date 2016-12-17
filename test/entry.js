@@ -4,23 +4,10 @@ const assert = require('chai').assert;
 const Node = require('../db/models/Node');
 const Flow = require('../db/models/Flow');
 const Entry = require('../db/models/Entry');
-const Message = require('../db/models/Message');
-
-const testMessage = new Message({
-  response: {
-    media: ['test.jpg']
-  },
-  platform: 'test',
-  client: {
-    type: 'jarvis',
-    id: 'abcd'
-  },
-  conversationId: '1234'
-});
 
 describe('verify entry schema', function() {
   it ('should have a title & flow', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -37,7 +24,7 @@ describe('verify entry schema', function() {
   });
 
   it ('should have a timestamp', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -70,7 +57,7 @@ describe('verify entry validation', function() {
 
 describe('verify entry functionality', function() {
   it ('should populate the flow', function() {
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,

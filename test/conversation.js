@@ -14,18 +14,7 @@ const clients = require('../config/clients');
 
 describe('verify conversation schema', function() {
   it ('should have a user, entry and pointer', function() {
-    const testMessage = new Message({
-      response: {
-        media: ['test.jpg']
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -44,18 +33,7 @@ describe('verify conversation schema', function() {
   });
 
   it ('should have a timestamp', function() {
-    const testMessage = new Message({
-      response: {
-        media: ['test.jpg']
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -89,18 +67,7 @@ describe('verify conversation validation', function() {
 
 describe('verify conversation virtuals', function() {
   it ('should have messages populated', function() {
-    const testMessage = new Message({
-      response: {
-        media: ['test.jpg']
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -137,18 +104,7 @@ describe('verify conversation virtuals', function() {
 describe('verify conversation functionality', function() {
   it ('should populate the conversation', function() {
     const testUser = new User();
-    const testMessage = new Message({
-      response: {
-        media: ['test.jpg']
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -163,7 +119,6 @@ describe('verify conversation functionality', function() {
     });
 
     return testUser.save()
-    .then(testMessage.save)
     .then(testNode.save)
     .then(testFlow.save)
     .then(testEntry.save)
@@ -179,18 +134,7 @@ describe('verify conversation functionality', function() {
 
   it ('should create a new conversation from entry', function() {
     const testUser = new User();
-    const testMessage = new Message({
-      response: {
-        media: ['test.jpg']
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -199,7 +143,6 @@ describe('verify conversation functionality', function() {
     const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'test'});
 
     return testUser.save()
-    .then(testMessage.save)
     .then(testNode.save)
     .then(testFlow.save)
     .then(testEntry.save)
@@ -213,18 +156,7 @@ describe('verify conversation functionality', function() {
 
   it ('should find the most recent conversation', function() {
     const testUser = new User();
-    const testMessage = new Message({
-      response: {
-        media: ['test.jpg']
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode = new Node({title: 'Test node', message: testMessage});
+    const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode,
@@ -254,19 +186,8 @@ describe('verify conversation functionality', function() {
   });
 
   it ('should update the null pointer', function() {
-    const testMessage = new Message({
-      response: {
-        media: ['test.jpg']
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode2 = new Node({title: 'Test node', message: testMessage});
-    const testNode1 = new PrintNode({title: 'Test node', message: testMessage, next: testNode2});
+    const testNode2 = new Node({title: 'Test node', message: {text: 'test'}});
+    const testNode1 = new PrintNode({title: 'Test node', message: {text: 'test'}, next: testNode2});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode1,
@@ -307,19 +228,8 @@ describe('verify conversation functionality', function() {
   });
 
   it ('should update the defined pointer', function() {
-    const testMessage = new Message({
-      response: {
-        media: ['test.jpg']
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode2 = new Node({title: 'Test node', message: testMessage});
-    const testNode1 = new PrintNode({title: 'Test node', message: testMessage, next: testNode2});
+    const testNode2 = new Node({title: 'Test node', message: {text: 'test'}});
+    const testNode1 = new PrintNode({title: 'Test node', message: {text: 'test'}, next: testNode2});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode1,
@@ -361,19 +271,8 @@ describe('verify conversation functionality', function() {
   });
 
   it ('should update the null pointer and hop', function() {
-    const testMessage = new Message({
-      response: {
-        text: 'test message'
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode2 = new Node({title: 'Test node', message: testMessage});
-    const testNode1 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode2, segmentName: 'test segment', hop: true});
+    const testNode2 = new Node({title: 'Test node', message: {text: 'test'}});
+    const testNode1 = new SegmentNode({title: 'Test node', message: {text: 'test'}, next: testNode2, segmentName: 'test segment', hop: true});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode1,
@@ -414,20 +313,9 @@ describe('verify conversation functionality', function() {
   });
 
   it ('should update the defined pointer and double hop', function() {
-    const testMessage = new Message({
-      response: {
-        text: 'test message'
-      },
-      platform: 'test',
-      client: {
-        type: 'jarvis',
-        id: 'abcd'
-      },
-      conversationId: '1234'
-    });
-    const testNode3 = new Node({title: 'Test node', message: testMessage});
-    const testNode2 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode3, segmentName: 'test segment', hop: true});
-    const testNode1 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode2, segmentName: 'test segment', hop: true});
+    const testNode3 = new Node({title: 'Test node', message: {text: 'test'}});
+    const testNode2 = new SegmentNode({title: 'Test node', message: {text: 'test'}, next: testNode3, segmentName: 'test segment', hop: true});
+    const testNode1 = new SegmentNode({title: 'Test node', message: {text: 'test'}, next: testNode2, segmentName: 'test segment', hop: true});
     const testFlow = new Flow({
       title: 'Test flow',
       start: testNode1,
