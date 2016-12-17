@@ -62,6 +62,7 @@ describe('verify protocol node validation', function() {
 describe('verify protocol node functionality', function() {
   it ('should move pointer correctly for non admin', function() {
     this.timeout(5000);
+    console.log('start');
     const adminMessage = new Message({
       response: {
         text: 'admin'
@@ -115,6 +116,8 @@ describe('verify protocol node functionality', function() {
         }
       });
 
+    console.log('knock knock')
+
     return node1.save()
     .then(node2.save)
     .then(user.save)
@@ -124,7 +127,7 @@ describe('verify protocol node functionality', function() {
     .then(() => Conversation.createFromEntry(user, testEntry))
     .then(convo => {
       convo.pointer = protocolNode;
-      return convo.save().catch(err => console.error(err));
+      return convo.save();
     })
     .then(convo => Conversation.populate(convo, Conversation.populationFields))
     .then(convo => convo.updatePointer(adminMessage))
@@ -132,8 +135,7 @@ describe('verify protocol node functionality', function() {
       assert.isDefined(convo.pointer, 'pointer is deinfed');
       assert.equal(convo.pointer.toString(), node2._id.toString(), 'pointer shifted correctly');
       assert.equal(convo.user.protocol, originalProtocol, 'protocol didnt change');
-    })
-    .catch(err => console.error(err));
+    });
   });
 
   it ('should move pointer correctly for an admin', function() {
