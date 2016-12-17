@@ -9,9 +9,6 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/public', express.static('./interface/dist'));
-app.use('/public/forge', express.static('./node_modules/@dosomething/forge/dist'));
-
 const router = require('../http/routes');
 app.use('/', router());
 
