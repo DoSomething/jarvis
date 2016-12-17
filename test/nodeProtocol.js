@@ -59,151 +59,151 @@ describe('verify protocol node validation', function() {
   });
 });
 
-// describe('verify protocol node functionality', function() {
-//   it ('should move pointer correctly for non admin', function() {
-//     this.timeout(5000);
-//
-//     const adminMessage = new Message({
-//       response: {
-//         text: 'admin'
-//       },
-//       platform: 'test',
-//       client: {
-//         type: 'user',
-//         id: 'abcd'
-//       },
-//       conversationId: '1234'
-//     });
-//
-//     const node1 = new Node({
-//       title: 'Succesful protocol change',
-//       message: testMessage
-//     });
-//
-//     const node2 = new Node({
-//       title: 'Failed protocol change',
-//       message: testMessage
-//     });
-//
-//     const protocolNode = new ProtocolNode({
-//       title: 'Test title 3',
-//       message: testMessage,
-//       protocol: 'admin',
-//       requiredRole: ['admin'],
-//       success: node1,
-//       failed: node2,
-//     });
-//
-//     const user = new User({_id: '5807ace57f43c2045904eda9'});
-//     const originalProtocol = user.protocol;
-//
-//     const testFlow = new Flow({
-//       title: 'Protocol flow',
-//       start: protocolNode,
-//       nodes: [protocolNode, node1, node2]
-//     });
-//     const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'protocol'});
-//
-//     nock(process.env.NORTHSTAR_URI)
-//       .get('/v2/auth/token')
-//       .reply(200, {
-//         access_token: '12345'
-//       })
-//       .get(`/v1/users/id/${user._id}`)
-//       .reply(200, {
-//         data: {
-//           role: 'user',
-//         }
-//       });
-//
-//     return node1.save()
-//     .then(node2.save)
-//     .then(user.save)
-//     .then(testFlow.save)
-//     .then(testEntry.save)
-//     .then(protocolNode.save)
-//     .then(() => Conversation.createFromEntry(user, testEntry))
-//     .then(convo => {
-//       convo.pointer = protocolNode;
-//       return convo.save();
-//     })
-//     .then(convo => Conversation.populate(convo, Conversation.populationFields))
-//     .then(convo => convo.updatePointer(adminMessage))
-//     .then((convo) => {
-//       assert.isDefined(convo.pointer, 'pointer is deinfed');
-//       assert.equal(convo.pointer.toString(), node2._id.toString(), 'pointer shifted correctly');
-//       assert.equal(convo.user.protocol, originalProtocol, 'protocol didnt change');
-//     });
-//   });
-//
-//   it ('should move pointer correctly for an admin', function() {
-//     const adminMessage = new Message({
-//       response: {
-//         text: 'admin'
-//       },
-//       platform: 'test',
-//       client: {
-//         type: 'user',
-//         id: 'abcd'
-//       },
-//       conversationId: '1234'
-//     });
-//
-//     const node1 = new Node({
-//       title: 'Succesful protocol change',
-//       message: testMessage
-//     });
-//
-//     const node2 = new Node({
-//       title: 'Failed protocol change',
-//       message: testMessage
-//     });
-//
-//     const protocolNode = new ProtocolNode({
-//       title: 'Test title 3',
-//       message: testMessage,
-//       protocol: 'admin',
-//       requiredRole: ['admin'],
-//       success: node1,
-//       failed: node2,
-//     });
-//
-//     const user = new User({_id: '559442c4a59dbfc9578b4b6a'});
-//     const testFlow = new Flow({
-//       title: 'Protocol flow',
-//       start: protocolNode,
-//       nodes: [protocolNode, node1, node2]
-//     });
-//     const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'protocol'});
-//
-//     nock(process.env.NORTHSTAR_URI)
-//       .get('/v2/auth/token')
-//       .reply(200, {
-//         access_token: '12345'
-//       })
-//       .get(`/v1/users/id/${user._id}`)
-//       .reply(200, {
-//         data: {
-//           role: 'admin',
-//         }
-//       });
-//
-//     return node1.save()
-//     .then(node2.save)
-//     .then(user.save)
-//     .then(testFlow.save)
-//     .then(testEntry.save)
-//     .then(protocolNode.save)
-//     .then(() => Conversation.createFromEntry(user, testEntry))
-//     .then(convo => {
-//       convo.pointer = protocolNode;
-//       return convo.save();
-//     })
-//     .then(convo => Conversation.populate(convo, Conversation.populationFields))
-//     .then(convo => convo.updatePointer(adminMessage))
-//     .then((convo) => {
-//       assert.isDefined(convo.pointer, 'pointer is deinfed');
-//       assert.equal(convo.pointer.toString(), node1._id.toString(), 'pointer shifted correctly');
-//     });
-//   });
-// });
+describe('verify protocol node functionality', function() {
+  it ('should move pointer correctly for non admin', function() {
+    this.timeout(5000);
+
+    const adminMessage = new Message({
+      response: {
+        text: 'admin'
+      },
+      platform: 'test',
+      client: {
+        type: 'user',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+
+    const node1 = new Node({
+      title: 'Succesful protocol change',
+      message: testMessage
+    });
+
+    const node2 = new Node({
+      title: 'Failed protocol change',
+      message: testMessage
+    });
+
+    const protocolNode = new ProtocolNode({
+      title: 'Test title 3',
+      message: testMessage,
+      protocol: 'admin',
+      requiredRole: ['admin'],
+      success: node1,
+      failed: node2,
+    });
+
+    const user = new User({_id: '5807ace57f43c2045904eda9'});
+    const originalProtocol = user.protocol;
+
+    const testFlow = new Flow({
+      title: 'Protocol flow',
+      start: protocolNode,
+      nodes: [protocolNode, node1, node2]
+    });
+    const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'protocol'});
+
+    nock(process.env.NORTHSTAR_URI)
+      .get('/v2/auth/token')
+      .reply(200, {
+        access_token: '12345'
+      })
+      .get(`/v1/users/id/${user._id}`)
+      .reply(200, {
+        data: {
+          role: 'user',
+        }
+      });
+
+    return node1.save()
+    .then(node2.save)
+    .then(user.save)
+    .then(testFlow.save)
+    .then(testEntry.save)
+    .then(protocolNode.save)
+    .then(() => Conversation.createFromEntry(user, testEntry))
+    .then(convo => {
+      convo.pointer = protocolNode;
+      return convo.save();
+    })
+    .then(convo => Conversation.populate(convo, Conversation.populationFields))
+    .then(convo => convo.updatePointer(adminMessage))
+    .then((convo) => {
+      assert.isDefined(convo.pointer, 'pointer is deinfed');
+      assert.equal(convo.pointer.toString(), node2._id.toString(), 'pointer shifted correctly');
+      assert.equal(convo.user.protocol, originalProtocol, 'protocol didnt change');
+    });
+  });
+
+  it ('should move pointer correctly for an admin', function() {
+    const adminMessage = new Message({
+      response: {
+        text: 'admin'
+      },
+      platform: 'test',
+      client: {
+        type: 'user',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+
+    const node1 = new Node({
+      title: 'Succesful protocol change',
+      message: testMessage
+    });
+
+    const node2 = new Node({
+      title: 'Failed protocol change',
+      message: testMessage
+    });
+
+    const protocolNode = new ProtocolNode({
+      title: 'Test title 3',
+      message: testMessage,
+      protocol: 'admin',
+      requiredRole: ['admin'],
+      success: node1,
+      failed: node2,
+    });
+
+    const user = new User({_id: '559442c4a59dbfc9578b4b6a'});
+    const testFlow = new Flow({
+      title: 'Protocol flow',
+      start: protocolNode,
+      nodes: [protocolNode, node1, node2]
+    });
+    const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'protocol'});
+
+    nock(process.env.NORTHSTAR_URI)
+      .get('/v2/auth/token')
+      .reply(200, {
+        access_token: '12345'
+      })
+      .get(`/v1/users/id/${user._id}`)
+      .reply(200, {
+        data: {
+          role: 'admin',
+        }
+      });
+
+    return node1.save()
+    .then(node2.save)
+    .then(user.save)
+    .then(testFlow.save)
+    .then(testEntry.save)
+    .then(protocolNode.save)
+    .then(() => Conversation.createFromEntry(user, testEntry))
+    .then(convo => {
+      convo.pointer = protocolNode;
+      return convo.save();
+    })
+    .then(convo => Conversation.populate(convo, Conversation.populationFields))
+    .then(convo => convo.updatePointer(adminMessage))
+    .then((convo) => {
+      assert.isDefined(convo.pointer, 'pointer is deinfed');
+      assert.equal(convo.pointer.toString(), node1._id.toString(), 'pointer shifted correctly');
+    });
+  });
+});
