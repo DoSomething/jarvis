@@ -1,6 +1,7 @@
 'use strict';
 
 const mongo = require('../mongo');
+const Node = require('./Node');
 
 const schema = new mongo.Schema({
   /**
@@ -101,30 +102,37 @@ schema.statics.createFromEntry = function (user, entry) {
 };
 
 /**
+ * Load the pointer for this conversation
+ * @return {Promise}
+ */
+schema.methods.loadPointer = function() {
+  return Node.findOne({_id: this.pointer}).exec();
+}
+
+/**
  * Update the conversation pointer based on the supplied message.
  *
  * @param  {Message} message
  * @return {Promise}
  */
 schema.methods.updatePointer = function (message) {
-  return new Promise((resolve) => {
-    if (!this.pointer) {
-      this.entry.flow.start;
-      resolve();
-    } else {
-      this.pointer.run(message, this).then(resolve);
-    }
-  })
-  .then(this.save)
-  .then(convo => convo.populate('pointer'))
+  return this.loadPointer()
   .then((pointer) => {
-    if (pointer.hop) {
-      return this.updatePointer(message).then(this.save);
+    if (!pointer) {
+      this.pointer = this.entry.flow.start;
+      return;
     }
+
+    return pointer.run(message, this);
+  })
+  .then(() => this.save())
+  .then(() => this.loadPointer())
+  .then((pointer) => {
+    if (pointer.hop) return this.updatePointer(message).then(this.save);
 
     return this;
   });
-};
+}
 
 const Conversation = mongo.mongoose.model('Conversation', schema);
 
@@ -133,5 +141,3 @@ module.exports = Conversation;
 // Schema Dependencies
 require('./User');
 require('./Entry');
-require('./Node');
-require('./NodeSegment');

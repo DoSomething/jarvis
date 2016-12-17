@@ -21,7 +21,9 @@ DoSomething.org's natural language interface.
 Use `npm run start` to execute the server, which handles both MongoDB & Jarvis. Jarvis is running behind Nodemon, so any file saves will restart the node server automatically.
 
 ## Testing
-Please write tests for all functionality & do a `npm run test` before merging your changes.
+Please write tests for all functionality & test before merging your changes.
+
+To execute all tests use `npm run test`, or you can grep for specific tests `./node_modules/.bin/mocha --grep message`. In order to run tests you'll need to first do `mongod` in another shell.
 
 All tests are located under the `test/` folder, we use Mocha, Chai & prefer assertion style.
 

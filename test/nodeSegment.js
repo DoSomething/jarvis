@@ -2,6 +2,7 @@ require('./root');
 
 const assert = require('chai').assert;
 const SegmentNode = require('../db/models/NodeSegment');
+const Segment = require('../db/models/Segment');
 const Node = require('../db/models/Node');
 const Message = require('../db/models/Message');
 const User = require('../db/models/User');
@@ -87,6 +88,31 @@ describe('verify segment node functionality', function() {
     .then((conversation) => {
       assert.isDefined(conversation.pointer, 'pointer is deinfed');
       assert.equal(conversation.pointer._id, node1._id, 'pointer shifted correctly');
+    });
+  });
+
+  it ('should create the correct segment', function() {
+    const user = new User();
+
+    const node1 = new Node({
+      title: 'Test title 1',
+      message: testMessage
+    });
+
+    const node2 = new SegmentNode({
+      title: 'Test title 2',
+      message: testMessage,
+      next: node1,
+      segmentName: 'test'
+    });
+
+    return node2.save()
+    .then(() => node2.run({}, {user}))
+    .then(() => Segment.findOne({user, name: node2.segmentName}))
+    .then((segment) => {
+      assert.isDefined(segment, 'segment is deinfed');
+      assert.equal(segment.user.toString(), user._id, 'user set correctly');
+      assert.equal(segment.name, node2.segmentName, 'segment name set correctly');
     });
   });
 });
