@@ -74,6 +74,7 @@ const schema = new mongo.Schema({
    */
   conversationId: {
     type: String,
+    index: true,
   },
 }, {
   timestamps: {
@@ -81,8 +82,6 @@ const schema = new mongo.Schema({
     createdAt: false,
   },
 });
-
-schema.index({ conversationId: 1, createdAt: -1 });
 
 /**
  * Set the message text to lowercase.

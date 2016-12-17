@@ -27,7 +27,6 @@ const schema = new mongo.Schema({
     {
       type: mongo.Schema.Types.ObjectId,
       ref: 'Node',
-      index: true,
     },
   ],
 }, {
