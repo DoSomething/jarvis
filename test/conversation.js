@@ -3,6 +3,7 @@ require('./root');
 const assert = require('chai').assert;
 const Node = require('../db/models/Node');
 const PrintNode = require('../db/models/NodePrint');
+const SegmentNode = require('../db/models/NodeSegment');
 const User = require('../db/models/User');
 const Flow = require('../db/models/Flow');
 const Conversation = require('../db/models/Conversation');
@@ -331,6 +332,59 @@ describe('verify conversation functionality', function() {
       user: testUser,
       entry: testEntry,
       pointer: testNode1,
+    });
+
+    const message = new Message({
+      response: {
+        text: 'test message'
+      },
+      platform: platforms[0],
+      client: {
+        type: 'user',
+        id: testUser._id.toString(),
+      },
+    });
+
+    return testNode1.save()
+    .then(testNode2.save)
+    .then(testFlow.save)
+    .then(testEntry.save)
+    .then(testUser.save)
+    .then(message.save)
+    .then(conversation.save)
+    .then(convo => Conversation.populate(convo, Conversation.populationFields))
+    .then(convo => convo.updatePointer(message))
+    .then(convo => Conversation.populate(convo, 'pointer'))
+    .then((convo) => {
+      assert.equal(convo.pointer._id.toString(), testNode2._id.toString(), 'Pointer updated correctly');
+    });
+  });
+
+  it ('should update the null pointer and hop', function() {
+    const testMessage = new Message({
+      response: {
+        text: 'test message'
+      },
+      platform: 'test',
+      client: {
+        type: 'jarvis',
+        id: 'abcd'
+      },
+      conversationId: '1234'
+    });
+    const testNode2 = new Node({title: 'Test node', message: testMessage});
+    const testNode1 = new SegmentNode({title: 'Test node', message: testMessage, next: testNode2, segmentName: 'test segment'});
+    const testFlow = new Flow({
+      title: 'Test flow',
+      start: testNode1,
+      nodes: [testNode1, testNode2]
+    });
+    const testEntry = new KeywordEntry({title: 'Test entry', flow: testFlow, keyword: 'test'});
+    const testUser = new User();
+
+    const conversation = new Conversation({
+      user: testUser,
+      entry: testEntry,
     });
 
     const message = new Message({

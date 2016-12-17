@@ -34,6 +34,16 @@ describe('verify node schema', function() {
       assert.isDefined(node.createdAt, 'has createdAt');
     });
   });
+
+  it('should have a virtual hop property', function() {
+    const node = new Node({
+      title: 'Test title',
+      message: testMessage,
+    });
+
+    assert.isBoolean(node.hop, 'Has hop boolean');
+    assert.equal(node.hop, false, 'Hop is set to false');
+  });
 });
 
 describe('verify node validation', function() {

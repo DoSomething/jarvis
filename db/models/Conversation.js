@@ -4,7 +4,7 @@ const mongo = require('../mongo');
 
 const schema = new mongo.Schema({
   /**
-   * The Gambit user attached to this conversation
+   * The Jarvis user attached to this conversation
    */
   user: {
     type: mongo.Schema.Types.ObjectId,
@@ -107,16 +107,23 @@ schema.statics.createFromEntry = function (user, entry) {
  * @return {Promise}
  */
 schema.methods.updatePointer = function (message) {
-  const update = new Promise((resolve) => {
+  return new Promise((resolve) => {
     if (!this.pointer) {
-      this.pointer = this.entry.flow.start;
+      this.entry.flow.start;
       resolve();
     } else {
       this.pointer.run(message, this).then(resolve);
     }
-  });
+  })
+  .then(this.save)
+  .then(convo => convo.populate('pointer'))
+  .then((pointer) => {
+    if (pointer.hop) {
+      return this.updatePointer(message).then(this.save);
+    }
 
-  return update.then(this.save);
+    return this;
+  });
 };
 
 const Conversation = mongo.mongoose.model('Conversation', schema);
@@ -127,3 +134,4 @@ module.exports = Conversation;
 require('./User');
 require('./Entry');
 require('./Node');
+require('./NodeSegment');

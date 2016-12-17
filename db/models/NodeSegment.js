@@ -2,6 +2,7 @@
 
 const mongo = require('../mongo');
 const Node = require('./Node');
+const Segment = require('./Segment');
 
 const schema = new mongo.Schema({
   /**
@@ -12,6 +13,16 @@ const schema = new mongo.Schema({
     ref: 'Node',
     required: true,
   },
+
+  /**
+   * Name of the segment to make.
+   */
+  segmentName: {
+    type: String,
+    required: true,
+    lowercase: true,
+    trim: true,
+  },
 }, {
   discriminatorKey: 'node',
   virtuals: {
@@ -20,11 +31,13 @@ const schema = new mongo.Schema({
 });
 
 schema.virtual('hop').get(() => {
-  return false;
+  return true;
 });
 
 /**
  * Update the conversation pointer to the next node.
+ * Creates a segment for the given user & this nodes
+ * segment name.
  *
  * @param  {Message} message User message to parse.
  * @param  {Conversation} conversation conversation to modify.
@@ -33,10 +46,16 @@ schema.virtual('hop').get(() => {
 schema.methods.run = function (message, conversation) {
   return new Promise((resolve) => {
     conversation.pointer = this.next;
-    resolve(conversation);
+
+    const segment = new Segment({
+      user: conversation.user,
+      name: this.segmentName,
+    });
+
+    segment.save().then(() => resolve(conversation));
   });
 };
 
-const PrintNode = Node.discriminator('node-print', schema);
+const SegmentNode = Node.discriminator('node-segment', schema);
 
-module.exports = PrintNode;
+module.exports = SegmentNode;

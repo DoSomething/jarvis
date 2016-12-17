@@ -43,6 +43,16 @@ describe('verify protocol node schema', function() {
     assert.isDefined(node2.success, 'Success node is defined');
     assert.isDefined(node2.failed, 'Failed node is defined');
   });
+
+  it('should have a virtual hop property', function() {
+    const node = new Node({
+      title: 'Test title',
+      message: testMessage,
+    });
+
+    assert.isBoolean(node.hop, 'Has hop boolean');
+    assert.equal(node.hop, false, 'Hop is set to false');
+  });
 });
 
 describe('verify protocol node validation', function() {

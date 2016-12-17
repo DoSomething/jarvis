@@ -24,6 +24,13 @@ const schema = new mongo.Schema({
 }, {
   discriminatorKey: 'node',
   timestamps: true,
+  virtuals: {
+    toObject: true,
+  },
+});
+
+schema.virtual('hop').get(() => {
+  return false;
 });
 
 /**

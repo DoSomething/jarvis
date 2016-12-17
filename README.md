@@ -3,20 +3,16 @@
 DoSomething.org's natural language interface.
 
 # Setup
-## With Docker
-1. `git clone`
-2. `docker-compose up`
 
-#### Docker setup under the hood
-Jarvis is executed by `Foreman` to handle process management & mimic Heroku.
-`Nodemon` will autoreload the server when a file changes.
-The compose file defines env variables for connection details & network mapping.
+## Prequisites
+* [Mongo](https://www.mongodb.com/download-center)
+* [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 
-## Without Docker
-1. Run an instance of MongoDB.
-  * Install locally & run with `mongod`
-2. Edit .env with correct service URI, most likely in for the form of localhost:27017
-3. `npm start` (requires Foreman from the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli))
+## Installation
+1. `git clone https://github.com/DoSomething/jarvis.git`
+2. `cd jarvis`
+3. `cp .env.example .env`
+4. `npm run seed`
 
 # Development
 ## Testing
@@ -41,7 +37,7 @@ All files should `"use script"`. It can be easy to forget this, so use `npm run 
 
 ## Database
 Use `npm run seed` to setup test nodes, flow & keyword.
-Make sure your .env is pointing to the correct database. 
+Make sure your .env is pointing to the correct database.
 
 # Heroku Setup
 All instances of this service live in a dedicated Heroku pipeline. The pipeline is configured to host review apps, staging application & production application.
