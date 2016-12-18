@@ -3,6 +3,7 @@
 const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 const mongo = require('../mongo');
 const Node = require('./Node');
+const stathat = require('../../lib/stathat');
 
 const schema = new mongo.Schema({
   /**
@@ -25,6 +26,7 @@ const schema = new mongo.Schema({
  * @return {Promise}
  */
 schema.methods.run = function (message, conversation) {
+  stathat.count('node executed~total,print');
   return new Promise((resolve) => {
     conversation.pointer = this.next;
     resolve(conversation);

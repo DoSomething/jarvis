@@ -1,7 +1,7 @@
 'use strict';
 
 const console = require('keypunch');
-const stathat = require('../util/stathat');
+const stathat = require('../lib/stathat');
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');

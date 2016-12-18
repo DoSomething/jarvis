@@ -1,4 +1,5 @@
 const console = require('keypunch');
+const stathat = require('../../lib/stathat');
 const helpers = require('../../util/helpers');
 const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 
@@ -33,6 +34,8 @@ function createMessage(text, user) {
 }
 
 router.post('/', (req, res) => {
+  stathat.count('message recieved~total,test', 1);
+
   const text = req.body.text;
   const email = req.body.email;
 
@@ -54,8 +57,11 @@ router.post('/', (req, res) => {
     scope.message = message;
     return helpers.routeRequest(scope);
   })
-  .then(message => res.send(message.response.text))
-  .catch((err) => console.error(err));
+  .then(message => {
+    res.send(message.response.text);
+    stathat.count('message sent~total,test', 1);
+  })
+  .catch(err => console.error(err));
 });
 
 module.exports = router;

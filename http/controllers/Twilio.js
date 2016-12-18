@@ -1,4 +1,5 @@
 const console = require('keypunch');
+const stathat = require('../../lib/stathat');
 const helpers = require('../../util/helpers');
 const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 
@@ -27,6 +28,8 @@ function createMessage(text, user) {
 }
 
 router.post('/', twilio.middleware, (req, res) => {
+  stathat.count('message recieved~total,twilio', 1);
+
   const scope = {
     user: {},
     message: {},
@@ -44,7 +47,10 @@ router.post('/', twilio.middleware, (req, res) => {
     scope.message = message;
     return helpers.routeRequest(scope);
   })
-  .then(message => twilio.sendMessage(message, scope.user))
+  .then(message => {
+    twilio.sendMessage(message, scope.user);
+    stathat.count('message sent~total,twilio', 1);
+  })
   .then(() => res.send('ok'))
   .catch(console.error);
 });
