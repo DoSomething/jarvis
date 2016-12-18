@@ -5,7 +5,7 @@ const Node = require('../db/models/Node');
 const Flow = require('../db/models/Flow');
 
 describe('verify flow schema', function() {
-  it ('should have a title, start & nodes', function() {
+  it ('should have a title & start', function() {
     const testNode = new Node({title: 'Test node', message: {text: 'test'}});
     const flow = new Flow({
       title: 'Test flow',
@@ -15,7 +15,6 @@ describe('verify flow schema', function() {
 
     assert.isString(flow.title, 'has title');
     assert.isDefined(flow.start, 'has start node');
-    assert.isArray(flow.nodes, 'has nodes');
   });
 
   it ('should have a timestamp', function() {

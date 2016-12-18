@@ -10,7 +10,6 @@ describe('verify user schema', function() {
 
     assert.isDefined(user.profile, 'has profile');
     assert.isDefined(user.profile.scienceSleuthDonationCount, 'has Science Sleuth donation count');
-    assert.isDefined(user.session, 'has session');
     assert.strictEqual(user.profile.scienceSleuthDonationCount['2015'], 0, 'Science Sleuth 2015 donation count equals 0');
     assert.strictEqual(user.profile.scienceSleuthDonationCount['2016'], 0, 'Science Sleuth 2015 donation count equals 0');
     assert.equal(user.protocol, 'user', 'default protocol is set to user');

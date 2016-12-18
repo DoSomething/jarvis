@@ -1,6 +1,7 @@
 'use strict';
 
 const console = require('keypunch');
+const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 const Keyword = require('../db/models/EntryKeyword');
 const Conversation = require('../db/models/Conversation');
 const Message = require('../db/models/Message');

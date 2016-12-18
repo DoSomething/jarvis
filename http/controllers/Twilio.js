@@ -1,5 +1,6 @@
 const console = require('keypunch');
 const helpers = require('../../util/helpers');
+const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const router = express.Router({ mergeParams: true });

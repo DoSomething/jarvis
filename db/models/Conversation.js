@@ -1,5 +1,6 @@
 'use strict';
 
+const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 const mongo = require('../mongo');
 const Node = require('./Node');
 
@@ -32,11 +33,14 @@ const schema = new mongo.Schema({
   },
 
   /**
-   * Misc. object for storing data to enable analysis & visualization later.
-   * WARN: Do not use this in any production queries.
-   * TODO: Remove in favor of events?
+   * Storage space for nodes in order
+   * to save variables specific
+   * to this conversation.
    */
-  analytics: mongo.Schema.Types.Mixed,
+  session: {
+    type: mongo.Schema.Types.Mixed,
+    default: {},
+  },
 }, {
   timestamps: true,
   toJSON: {

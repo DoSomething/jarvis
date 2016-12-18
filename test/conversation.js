@@ -27,6 +27,7 @@ describe('verify conversation schema', function() {
       entry: testEntry,
     });
 
+    assert.isDefined(conversation.session, 'has session');
     assert.isDefined(conversation.user, 'User is defined');
     assert.isDefined(conversation.entry, 'Entry is defined');
     assert.isNull(conversation.pointer, 'Pointer is null');

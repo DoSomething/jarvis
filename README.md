@@ -38,6 +38,9 @@ If you add new root level folders containing application logic, please add the f
 ## Strict Mode
 All files should `"use script"`. It can be easy to forget this, so use `npm run strict` to automatically add it to all files which don't already have it.
 
+## Promises
+Please require Bluebird at the top of every file you intend to use promises with. Unfortunately native Javascript promises swallow errors by default which can make debugging difficult. Bluebird solves this & provides other Promise functionality.
+
 ## Database
 Use `npm run seed` to setup test nodes, flow & keyword.
 

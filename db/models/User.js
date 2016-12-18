@@ -1,5 +1,6 @@
 'use strict';
 
+const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 const mongo = require('../mongo');
 const northstar = require('../../lib/northstar');
 const protocols = require('../../config/protocols');
@@ -20,16 +21,6 @@ const schema = new mongo.Schema({
     required: true,
     lowercase: true,
     trim: true,
-  },
-
-  /**
-   * Volatile storage space for nodes to use
-   * in order to temp. save variables specific
-   * to this session.
-   */
-  session: {
-    type: mongo.Schema.Types.Mixed,
-    default: {},
   },
 
   /**

@@ -1,5 +1,6 @@
 'use strict';
 
+const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 const mongo = require('../mongo');
 const Node = require('./Node');
 const Segment = require('./Segment');

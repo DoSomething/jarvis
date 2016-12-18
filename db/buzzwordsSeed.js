@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 require('./mongo');
+const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 
 const console = require('keypunch');
 const Node = require('./models/Node');
