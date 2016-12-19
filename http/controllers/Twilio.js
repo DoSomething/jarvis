@@ -47,10 +47,7 @@ router.post('/', twilio.middleware, (req, res) => {
     scope.message = message;
     return helpers.routeRequest(scope);
   })
-  .then(message => {
-    twilio.sendMessage(message, scope.user);
-    stathat.count('message sent~total,twilio', 1);
-  })
+  .then(message => twilio.sendMessage(message, scope.user))
   .then(() => res.send('ok'))
   .catch(console.error);
 });

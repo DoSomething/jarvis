@@ -55,4 +55,23 @@ module.exports = {
     .then(conversation => Conversation.populate(conversation, 'pointer'))
     .then(conversation => module.exports.getNodeMessage(scope.platform, conversation))
     .catch(err => console.error(err)),
+
+  /**
+   * Safley retrieve a variable under a multi layered data structure.
+   * @param  {String} path      Dot seperated path. eg: 'user.profile.firstName'
+   * @param  {Object} container Object to search.
+   * @return {Mixed}            Returns the value if found, otherwise undefined.
+   */
+  deepGet: (path, container) => {
+    const keys = path.split('.');
+    let cursor = container;
+
+    for (const key of keys) {
+      if (typeof cursor[key] === 'undefined') return undefined;
+
+      cursor = cursor[key];
+    }
+
+    return cursor;
+  }
 };
