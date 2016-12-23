@@ -1,36 +1,19 @@
 'use strict';
 
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
+const console = require('keypunch');
 const mongo = require('../mongo');
 
-const platforms = require('../../config/platforms');
-const clients = require('../../config/clients');
+const platforms = require(`${global.root}/config/platforms`);
+const clients = require(`${global.root}/config/clients`);
+
+const responseSchema = require('./Response').schema;
 
 const schema = new mongo.Schema({
   /**
    * Object containing information on
    * what was displayed in a message.
    */
-  response: {
-
-    text: {
-      type: String,
-      trim: true,
-      default: '',
-    },
-
-    /**
-     * Should contain strings of Media URI's.
-     */
-    media: [
-      {
-        type: String,
-        lowercase: true,
-        trim: true,
-        default: [],
-      },
-    ],
-  },
+  response: responseSchema,
 
   /**
    * The platform this message is being delivered over.
@@ -91,7 +74,7 @@ const schema = new mongo.Schema({
  */
 schema.methods.lowercaseResponse = function () {
   this.response.text = this.response.text.toLowerCase();
-  return this.save();
+  return this.save().catch(err => console.error(err));
 };
 
 /**
@@ -101,7 +84,7 @@ schema.methods.lowercaseResponse = function () {
  */
 schema.methods.attachConversation = function (conversation) {
   this.conversationId = conversation._id.toString();
-  return this.save();
+  return this.save().catch(err => console.error(err));
 };
 
 /**
@@ -110,7 +93,10 @@ schema.methods.attachConversation = function (conversation) {
  * @return {Promise}
  */
 schema.statics.findLastConversationMessage = function (conversation) {
-  return this.findOne({ conversationId: conversation._id }).sort({ createdAt: -1 }).exec();
+  return this.findOne({ conversationId: conversation._id })
+  .sort({ createdAt: -1 })
+  .exec()
+  .catch(err => console.error(err));
 };
 
 const Message = mongo.mongoose.model('Message', schema);

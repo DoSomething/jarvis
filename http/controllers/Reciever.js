@@ -1,15 +1,15 @@
+'use strict';
+
 const console = require('keypunch');
-const stathat = require('../../lib/stathat');
-const helpers = require('../../util/helpers');
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
+const stathat = require(`${global.root}/lib/stathat`);
+const northstar = require(`${global.root}/lib/northstar`);
+const helpers = require(`${global.root}/util/helpers`);
 
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-const northstar = require('../../lib/northstar');
-
-const User = require('../../db/Models/User');
-const Message = require('../../db/models/Message');
+const User = require(`${global.models}/User`);
+const Message = require(`${global.models}/Message`);
 
 /**
  * Create a Message for the given text & user.
@@ -58,7 +58,15 @@ router.post('/', (req, res) => {
     return helpers.routeRequest(scope);
   })
   .then(message => {
-    res.send(message.response.text);
+    let text = helpers.deepGet('response.text', message);
+    let media = helpers.deepGet('response.meda', message);
+
+    if (!text) {
+      let text = '';
+    }
+
+    res.send(text);
+
     stathat.count('message sent~total,test', 1);
   })
   .catch(err => console.error(err));

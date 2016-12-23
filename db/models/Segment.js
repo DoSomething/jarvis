@@ -36,4 +36,4 @@ const Segment = mongo.mongoose.model('Segment', schema);
 module.exports = Segment;
 
 // Schema Dependencies
-require('./User');
+require(`${global.models}/User`);

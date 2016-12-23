@@ -93,3 +93,8 @@ function save() {
 }
 
 setTimeout(save, 2000); // Give a second for DB connection.
+
+// 2.0
+// Multiple .js files in a seed folder
+// Each runs from npm seed, maybe allow for -- targetting in the command?
+// Question becomes how to handle versioning. 

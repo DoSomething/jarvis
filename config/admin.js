@@ -1,20 +1,51 @@
 'use strict';
 
-const Flow = require('../db/models/Flow');
+const Node = require(`${global.nodes}/Node`);
+const Print = require(`${global.nodes}/Print`);
+
+/**
+ * Default submission handler.
+ * Retun the given input unmodified.
+ * @param  {String} input
+ * @return {String}
+ */
+const defaultSubmit = input => input;
+
+/**
+ * Convert the comma seperated string to an array.
+ * @param  {String} input
+ * @return {Array}
+ */
+const convertStringToArray = input => input.split(',');
 
 module.exports = {
-  flow: {
-    fill: ['title'],
-    attach: {
-      start: {
-        ref: 'single',
-        type: 'node',
+  print: {
+    fill: [
+      {
+        name: 'title',
+        description: 'A descriptive name of this node',
+        onSubmit: defaultSubmit,
       },
-      nodes: {
-        ref: 'multi',
-        type: 'node',
+      {
+        name: 'text',
+        description: 'Text to print to the user',
+        onSubmit: defaultSubmit,
+        parent: 'output',
       },
-    },
-    Instance: Flow,
+      {
+        name: 'media',
+        description: 'Comma seperated links to images to send',
+        onSubmit: convertStringToArray,
+        parent: 'output',
+      },
+    ],
+    attach: [
+      {
+        name: 'next',
+        description: 'Node that comes next',
+        typeOf: Node,
+      },
+    ],
+    Instance: Print,
   },
 };

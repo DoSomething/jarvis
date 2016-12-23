@@ -1,35 +1,21 @@
 'use strict';
 
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
+const console = require('keypunch');
 const mongo = require('../mongo');
 const Node = require('./Node');
-const protocols = require('../../config/protocols');
-const stathat = require('../../lib/stathat');
+const protocols = require(`${global.root}/config/protocols`);
+const stathat = require(`${global.root}/lib/stathat`);
+
+const mapping = {
+  user: {
+    requires: ['user', 'staff', 'admin'],
+  },
+  admin: {
+    requires: ['staff', 'admin'],
+  },
+};
 
 const schema = new mongo.Schema({
-  /**
-   * What protocol is this Node
-   * changing too?
-   */
-  protocol: {
-    type: String,
-    default: 'user',
-    enum: protocols,
-    required: true,
-    lowercase: true,
-    trim: true,
-  },
-
-  /**
-   * The roles that are allowed
-   * to switch to this protocol.
-   */
-  requiredRole: {
-    type: Array,
-    default: ['user'],
-    required: true,
-  },
-
   /**
    * The node that runs if the protocol changes
    */
@@ -50,7 +36,12 @@ const schema = new mongo.Schema({
   },
 }, {
   discriminatorKey: 'node',
+  toObject: {
+    virtuals: true,
+  },
 });
+
+schema.virtual('continuous').get(() => true);
 
 /**
  * Update the conversation pointer to the next node.
@@ -60,16 +51,26 @@ const schema = new mongo.Schema({
  * @return {Promise}
  */
 schema.methods.run = function (message, conversation) {
-  stathat.count('node executed~total,protocol');
-  return new Promise((resolve) => {
-    if (message.response.text !== this.protocol) {
+  stathat.count('node executed~total,protocol', 1);
+
+  const msg = message.response.text;
+  const scope = {};
+
+  const switchProtocol = new Promise((resolve) => {
+    const protocol = mapping[msg];
+
+    if (!protocol) {
       conversation.pointer = this.failed;
       return resolve(conversation);
     }
 
+    scope.protocol = protocol;
+
     return conversation.user.getNorthstarUser()
     .then((nsUser) => {
-      if (this.requiredRole.indexOf(nsUser.data.role) < 0) {
+      const userRole = nsUser.data.role;
+
+      if (scope.protocol.requires.indexOf(userRole) < 0) {
         return false;
       }
 
@@ -78,16 +79,26 @@ schema.methods.run = function (message, conversation) {
     .then((access) => {
       if (!access) {
         conversation.pointer = this.failed;
-        return resolve(conversation);
+        return resolve();
       }
 
       conversation.pointer = this.success;
-      conversation.user.protocol = this.protocol;
-      return conversation.user.save().then(() => resolve(conversation));
+      conversation.user.protocol = msg;
+
+      return conversation.user.save()
+      .then(() => resolve())
+      .catch(err => console.error(err));
     });
   });
+
+  switchProtocol.catch(err => console.error(err));
+
+  return switchProtocol;
 };
 
 const PrintNode = Node.discriminator('node-protocol', schema);
 
 module.exports = PrintNode;
+
+// Schema Dependencies
+require(`${global.models}/User`);

@@ -1,9 +1,9 @@
 'use strict';
 
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
+const console = require('keypunch');
 const mongo = require('../mongo');
 const Node = require('./Node');
-const stathat = require('../../lib/stathat');
+const stathat = require(`${global.root}/lib/stathat`);
 
 const schema = new mongo.Schema({
   /**
@@ -35,7 +35,12 @@ const schema = new mongo.Schema({
   },
 }, {
   discriminatorKey: 'node',
+  toObject: {
+    virtuals: true,
+  },
 });
+
+schema.virtual('continuous').get(() => true);
 
 /**
  * Update the conversation pointer to the next node based
@@ -46,12 +51,16 @@ const schema = new mongo.Schema({
  * @return {Promise}
  */
 schema.methods.run = function (message, conversation) {
-  stathat.count('node executed~total,conditional');
-  return new Promise((resolve) => {
+  stathat.count('node executed~total,conditional', 1);
+  const conditional = new Promise((resolve) => {
     const passedTest = this.testFor === message.response.text;
     conversation.pointer = passedTest ? this.pass : this.fail;
-    resolve(conversation);
+    resolve();
   });
+
+  conditional.catch(err => console.error(err));
+
+  return conditional;
 };
 
 const ConditionalNode = Node.discriminator('node-conditional', schema);

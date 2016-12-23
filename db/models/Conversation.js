@@ -1,8 +1,8 @@
 'use strict';
 
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
+const console = require('keypunch');
 const mongo = require('../mongo');
-const Node = require('./Node');
+const Node = require(`${global.nodes}/Node`);
 
 const schema = new mongo.Schema({
   /**
@@ -66,7 +66,7 @@ schema.statics.populationFields = [
   {
     path: 'entry',
     populate: {
-      path: 'flow',
+      path: 'start',
     },
   },
   {
@@ -86,7 +86,8 @@ schema.statics.getUsersActiveConversation = function (userId) {
   return this.findOne({ user: userId })
   .sort({ updatedAt: -1 })
   .populate(this.populationFields)
-  .exec();
+  .exec()
+  .catch(err => console.error(err));
 };
 
 /**
@@ -102,7 +103,8 @@ schema.statics.createFromEntry = function (user, entry) {
   });
 
   return conversation.save()
-  .then(convo => this.populate(convo, this.populationFields));
+  .then(convo => this.populate(convo, this.populationFields))
+  .catch(err => console.error(err));
 };
 
 /**
@@ -110,7 +112,9 @@ schema.statics.createFromEntry = function (user, entry) {
  * @return {Promise}
  */
 schema.methods.loadPointer = function () {
-  return Node.findOne({ _id: this.pointer }).exec();
+  return Node.findOne({ _id: this.pointer })
+  .exec()
+  .catch(err => console.error(err));
 };
 
 /**
@@ -120,22 +124,33 @@ schema.methods.loadPointer = function () {
  * @return {Promise}
  */
 schema.methods.updatePointer = function (message) {
+  const scope = {};
+
   return this.loadPointer()
   .then((pointer) => {
-    if (!pointer) {
-      this.pointer = this.entry.flow.start;
-      return true;
-    }
+    if (pointer) return pointer;
 
-    return pointer.run(message, this);
+    this.pointer = this.entry.start;
+    return this.loadPointer();
   })
-  .then(() => this.save())
+  .then((pointer) => {
+    scope.continuous = pointer.continuous;
+    return pointer;
+  })
+  .then(pointer => pointer.run(message, this))
+  .then((response) => {
+    scope.response = response;
+    return this.save().catch(err => console.error(err));
+  })
   .then(() => this.loadPointer())
   .then((pointer) => {
-    if (pointer.hop) return this.updatePointer(message).then(this.save);
+    if (scope.continuous) {
+      return this.updatePointer(message);
+    }
 
-    return this;
-  });
+    return scope.response;
+  })
+  .catch(err => console.error(err));
 };
 
 const Conversation = mongo.mongoose.model('Conversation', schema);
@@ -144,4 +159,5 @@ module.exports = Conversation;
 
 // Schema Dependencies
 require('./User');
-require('./Entry');
+require(`${global.entries}`);
+require(`${global.nodes}`);

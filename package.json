@@ -7,7 +7,7 @@
     "start": "heroku local --procfile DevProcfile",
     "lint": "eslint --ext=.js leaders followers lib util db config",
     "strict": "use-strict leaders followers lib util db config",
-    "seed": "node ./db/buzzwordsSeed.js"
+    "seed": "node ./db/seed.js"
   },
   "author": "DoSomething.org",
   "license": "MIT",

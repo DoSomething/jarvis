@@ -12,7 +12,7 @@ mongoose.connection.on('connected', () => {
 });
 
 mongoose.connection.on('error', (err) => {
-  stathat.count('mongo error', 1);
+  stathat.count('mongo connection error', 1);
   console.info('Mongoose connection error', err);
 });
 

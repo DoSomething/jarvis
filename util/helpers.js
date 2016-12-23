@@ -1,23 +1,25 @@
 'use strict';
 
 const console = require('keypunch');
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
-const Keyword = require('../db/models/EntryKeyword');
-const Conversation = require('../db/models/Conversation');
-const Message = require('../db/models/Message');
+const Keyword = require(`${global.entries}/Keyword`);
+const Conversation = require(`${global.models}/Conversation`);
+const Message = require(`${global.models}/Message`);
+const admin = require(`${global.root}/config/admin`);
 
 module.exports = {
   /**
    * Get the Message to return for the given platform
    * and conversation.
    * @param  {String} platform
-   * @param  {conversation} conversation
+   * @param  {Conversation} conversation
+   * @param  {Response} response
    * @return {Promise}
    */
-  getNodeMessage: (platform, conversation) => {
+  getNodeMessage: (platform, conversation, response) => {
+    console.log(platform, conversation, response);
     const message = new Message({
       platform,
-      response: conversation.pointer.message,
+      response,
       client: {
         type: 'application',
         id: 'jarvis',
@@ -25,7 +27,7 @@ module.exports = {
       conversationId: conversation._id,
     });
 
-    return message.save();
+    return message.save().catch(err => console.error(err));
   },
 
   /**
@@ -46,14 +48,21 @@ module.exports = {
    * @param  {Object} scope Should contain a Message & User.
    * @return {Promise}
    */
-  routeRequest: (scope) => Keyword.findByKeyword(scope.message.response.text, scope.user.protocol)
+  routeRequest: (scope) =>
+    Keyword.findByKeyword(
+      scope.message.response.text,
+      scope.user.protocol, true)
     .then((keyword) => (keyword ?
-        Conversation.createFromEntry(scope.user, keyword) :
-        Conversation.getUsersActiveConversation(scope.user.id)))
-    .then((conversation) => scope.message.attachConversation(conversation)
-      .then(message => conversation.updatePointer(message)))
-    .then(conversation => Conversation.populate(conversation, 'pointer'))
-    .then(conversation => module.exports.getNodeMessage(scope.platform, conversation))
+      Conversation.createFromEntry(scope.user, keyword) :
+      Conversation.getUsersActiveConversation(scope.user.id)))
+    .then(conversation => scope.message.attachConversation(conversation)
+      .then(message => conversation.updatePointer(message))
+      .then((response) => module.exports.getNodeMessage(
+        scope.platform,
+        conversation,
+        response))
+      .catch(err => console.error(err))
+    )
     .catch(err => console.error(err)),
 
   /**
@@ -63,6 +72,8 @@ module.exports = {
    * @return {Mixed}            Returns the value if found, otherwise undefined.
    */
   deepGet: (path, container) => {
+    if (typeof container === undefined) return undefined;
+
     const keys = path.split('.');
     let cursor = container;
 
@@ -73,5 +84,18 @@ module.exports = {
     }
 
     return cursor;
-  }
+  },
+
+  /**
+   * Get the node types an admin can create.
+   * @return {Array}
+   */
+  getCreatableNodeTypes: () => Object.keys(admin),
+
+  /**
+   * Check if the given type is creatable by an admin.
+   * @param  {String}  type
+   * @return {Boolean}
+   */
+  isValidCreatableNodeType: type => typeof admin[type] === 'undefined',
 };

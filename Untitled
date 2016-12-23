@@ -1,0 +1,12 @@
+RECODE
+
+- cleaner tests, dont leave anything out, dont cover "schemas"
+- no flows
+- no messages on Node. Bare node is just "Title" and "Hop" fields. run() function returns the message to send.
+- better file organization re: nodes, loading (remove ../../)
+- think about versioning, archiving, etc
+- start with images as well, don't skip around it
+- lets handle promises by default, no bluebird hack
+- lets do the sharding on messages
+- lets get some business functionality as well
+-

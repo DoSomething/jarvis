@@ -1,9 +1,9 @@
 'use strict';
 
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
+const console = require('keypunch');
 const mongo = require('../mongo');
-const northstar = require('../../lib/northstar');
-const protocols = require('../../config/protocols');
+const northstar = require(`${global.root}/lib/northstar`);
+const protocols = require(`${global.root}/config/protocols`);
 
 /**
  * User schema.
@@ -59,21 +59,32 @@ const schema = new mongo.Schema({
  * @return {Promise}
  */
 schema.statics.findOrCreate = function (primaryKey, primaryKeyType) {
+  const nsUser = {};
+  nsUser[primaryKeyType] = primaryKey;
+
   return northstar.findUser(primaryKeyType, primaryKey)
   .then((res) => {
     if (res.data) return res.data;
 
-    const nsUser = {};
-    nsUser[primaryKeyType] = primaryKey;
-    return northstar.createUser(nsUser).then(newUserRes => newUserRes.data);
+    return northstar.createUser(nsUser)
+    .then(newUserRes => newUserRes.data)
+    .catch(err => console.error(err));
   })
-  .then(nsUser => this.findOne({ _id: nsUser._id })
-    .then((user) => {
-      if (user) return user;
+  .then(nsRes => {
+    nsUser._id = nsRes._id;
+  })
+  .then(() => this.findOne({ _id: nsUser._id })
+    .exec()
+    .catch(err => console.error(err))
+  )
+  .then((user) => {
+    if (user) return user;
 
-      return new this({ _id: nsUser._id }).save();
-    })
-  );
+    return new this({ _id: nsUser._id })
+    .save()
+    .catch(err => console.error(err));
+  })
+  .catch(err => console.error(err));
 };
 
 /**
@@ -81,7 +92,8 @@ schema.statics.findOrCreate = function (primaryKey, primaryKeyType) {
  * @return {Promise}
  */
 schema.methods.getNorthstarUser = function () {
-  return northstar.findUserByNorthstarId(this._id);
+  return northstar.findUserByNorthstarId(this._id)
+  .catch(err => console.error(err));
 };
 
 const User = mongo.mongoose.model('User', schema);

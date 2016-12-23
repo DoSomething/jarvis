@@ -1,10 +1,10 @@
 'use strict';
 
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
+const console = require('keypunch');
 const mongo = require('../mongo');
 const Node = require('./Node');
-const Segment = require('./Segment');
-const stathat = require('../../lib/stathat');
+const Segment = require(`${global.models}/Segment`);
+const stathat = require(`${global.root}/lib/stathat`);
 
 const schema = new mongo.Schema({
   /**
@@ -27,7 +27,12 @@ const schema = new mongo.Schema({
   },
 }, {
   discriminatorKey: 'node',
+  toObject: {
+    virtuals: true,
+  },
 });
+
+schema.virtual('continuous').get(() => true);
 
 /**
  * Update the conversation pointer to the next node.
@@ -39,8 +44,8 @@ const schema = new mongo.Schema({
  * @return {Promise}
  */
 schema.methods.run = function (message, conversation) {
-  stathat.count('node executed~total,segment');
-  return new Promise((resolve) => {
+  stathat.count('node executed~total,segment', 1);
+  const createSegment = new Promise((resolve) => {
     conversation.pointer = this.next;
 
     const segment = new Segment({
@@ -48,8 +53,14 @@ schema.methods.run = function (message, conversation) {
       name: this.segmentName,
     });
 
-    segment.save().then(() => resolve(conversation));
+    segment.save()
+    .then(() => resolve())
+    .catch(err => console.error(err));
   });
+
+  createSegment.catch(err => console.error(err));
+
+  return createSegment;
 };
 
 const SegmentNode = Node.discriminator('node-segment', schema);

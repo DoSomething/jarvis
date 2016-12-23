@@ -10,6 +10,7 @@ const schema = new mongo.Schema({
     type: String,
     required: true,
     text: true,
+    trim: true,
   },
 
   /**
@@ -19,23 +20,11 @@ const schema = new mongo.Schema({
     type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
   },
-
-  /**
-   * All of the Nodes in this flow.
-   */
-  nodes: [
-    {
-      type: mongo.Schema.Types.ObjectId,
-      ref: 'Node',
-    },
-  ],
 }, {
+  discriminatorKey: 'entry',
   timestamps: true,
 });
 
-const Flow = mongo.mongoose.model('Flow', schema);
+const Entry = mongo.mongoose.model('Entry', schema);
 
-module.exports = Flow;
-
-// Schema Dependencies
-require('./Node');
+module.exports = Entry;

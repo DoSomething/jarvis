@@ -1,6 +1,9 @@
 'use strict';
 
-const console = require('../util/configureLogger')();
+const console = require('keypunch');
+console.addHeaderFunction(() => `[pid:${process.pid}]`);
+
+require('../util/pathHelpers');
 
 const express = require('express');
 const app = express();
