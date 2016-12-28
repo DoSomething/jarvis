@@ -62,10 +62,7 @@ const schema = new mongo.Schema({
     index: true,
   },
 }, {
-  timestamps: {
-    updatedAt: true,
-    createdAt: false,
-  },
+  timestamps: true,
 });
 
 /**

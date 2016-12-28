@@ -3,7 +3,7 @@
 const console = require('keypunch');
 const mongo = require('../mongo');
 const Node = require('./Node');
-const protocols = require(`${global.root}/config/protocols`);
+const Response = require(`${global.models}/Response`).model;
 const stathat = require(`${global.root}/lib/stathat`);
 
 const mapping = {
@@ -15,33 +15,14 @@ const mapping = {
   },
 };
 
-const schema = new mongo.Schema({
-  /**
-   * The node that runs if the protocol changes
-   */
-  success: {
-    type: mongo.Schema.Types.ObjectId,
-    ref: 'Node',
-    required: true,
-  },
-
-  /**
-   * The node that runs if the protocol
-   * fails to change.
-   */
-  failed: {
-    type: mongo.Schema.Types.ObjectId,
-    ref: 'Node',
-    required: true,
-  },
-}, {
+const schema = new mongo.Schema({}, {
   discriminatorKey: 'node',
   toObject: {
     virtuals: true,
   },
 });
 
-schema.virtual('continuous').get(() => true);
+schema.virtual('continuous').get(() => false);
 
 /**
  * Update the conversation pointer to the next node.
@@ -51,17 +32,20 @@ schema.virtual('continuous').get(() => true);
  * @return {Promise}
  */
 schema.methods.run = function (message, conversation) {
-  stathat.count('node executed~total,protocol', 1);
+  stathat.count('node executed~total,admin protocol', 1);
 
   const msg = message.response.text;
   const scope = {};
+
+  const invalidName = new Response({ text: `Select a role: ${Object.keys(mapping).join(', ')}` });
+  const invalidAccess = new Response({ text: 'You\'re not allowed to do that!' });
+  const success = new Response({ text: 'Switched role.' });
 
   const switchProtocol = new Promise((resolve) => {
     const protocol = mapping[msg];
 
     if (!protocol) {
-      conversation.pointer = this.failed;
-      return resolve(conversation);
+      return resolve(invalidName);
     }
 
     scope.protocol = protocol;
@@ -79,14 +63,14 @@ schema.methods.run = function (message, conversation) {
     .then((access) => {
       if (!access) {
         conversation.pointer = this.failed;
-        return resolve();
+        return resolve(invalidAccess);
       }
 
       conversation.pointer = this.success;
       conversation.user.protocol = msg;
 
       return conversation.user.save()
-      .then(() => resolve())
+      .then(() => resolve(success))
       .catch(err => console.error(err));
     });
   });
@@ -96,9 +80,9 @@ schema.methods.run = function (message, conversation) {
   return switchProtocol;
 };
 
-const PrintNode = Node.discriminator('node-protocol', schema);
+const AdminProtocol = Node.discriminator('node-admin-protocol', schema);
 
-module.exports = PrintNode;
+module.exports = AdminProtocol;
 
 // Schema Dependencies
 require(`${global.models}/User`);

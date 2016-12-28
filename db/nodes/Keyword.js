@@ -2,10 +2,19 @@
 
 const console = require('keypunch');
 const mongo = require('../mongo');
-const Entry = require('./Entry');
+const Node = require('./Node');
 const protocols = require(`${global.root}/config/protocols`);
+const stathat = require(`${global.root}/lib/stathat`);
 
 const schema = new mongo.Schema({
+  /**
+   * The node that always comes next.
+   */
+  start: {
+    type: mongo.Schema.Types.ObjectId,
+    ref: 'Node',
+  },
+
   /**
    * Every keyword is formatted
    * to be lowercase + trimmed.
@@ -31,8 +40,8 @@ const schema = new mongo.Schema({
   },
 
   /**
-   * Keywords are marked as active if
-   * users can send them in.
+   * Multiple keywords can exist of the same
+   * string, but only one can be active.
    */
   active: {
     type: Boolean,
@@ -40,25 +49,47 @@ const schema = new mongo.Schema({
     required: true,
   },
 }, {
-  discriminatorKey: 'entry',
+  discriminatorKey: 'node',
+  toObject: {
+    virtuals: true,
+  },
 });
 
-schema.pre('validate', function(next) {
+schema.virtual('continuous').get(() => true);
+
+schema.index({ keyword: 1, protocol: 1, active: 1 });
+
+schema.pre('validate', function (next) {
   if (!this.active) next();
 
   const keyword = this.keyword;
   const protocol = this.protocol;
   const active = true;
 
-  Entry.findOne({ keyword, protocol, active }).exec()
+  Node.findOne({ keyword, protocol, active }).exec()
   .then((dupe) => {
     if (dupe) {
       next(new Error('Duplicate active keyword'));
     } else {
       next();
     }
-  })
+  });
 });
+
+/**
+ * Update the conversation pointer to the next node.
+ *
+ * @param  {Message} message User message to parse.
+ * @param  {Conversation} conversation conversation to modify.
+ * @return {Promise}
+ */
+schema.methods.run = function (message, conversation) { // eslint-disable-line no-unused-vars
+  stathat.count('node executed~total,keyword', 1);
+  return new Promise((resolve) => {
+    if (this.start) conversation.pointer = this.start;
+    resolve();
+  });
+};
 
 /**
  * Find a KeywordEntry by the given keyword and protocol.
@@ -76,8 +107,6 @@ schema.statics.findByKeyword = function (keyword, protocol, active) {
   .catch(err => console.error(err));
 };
 
-schema.index({ keyword: 1, protocol: 1, active: 1 });
+const KeywordNode = Node.discriminator('node-keyword', schema);
 
-const KeywordEntry = Entry.discriminator('entry-keyword', schema);
-
-module.exports = KeywordEntry;
+module.exports = KeywordNode;

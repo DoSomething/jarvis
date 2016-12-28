@@ -1,10 +1,12 @@
-if (!process.env.TRAVIS) require('dotenv').config();
+require('dotenv').config();
 
 if (process.env.MONGODB_TEST_URI) process.env.MONGODB_URI = process.env.MONGODB_TEST_URI;
 
 process.env.LOG_LEVEL = 4;
 
-const mongo = require('../db/mongo');
+require('../util/pathHelpers');
+
+const mongo = require(`${global.root}/db/mongo`);
 const nock = require('nock');
 
 function dropDatabase(done) {

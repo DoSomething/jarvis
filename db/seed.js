@@ -4,9 +4,9 @@ require('dotenv').config();
 require('../util/pathHelpers');
 
 const console = require('keypunch');
-const mongo = require('./mongo');
+require('./mongo');
 
-const seeds = ['protocols', 'admin'];
+const seeds = ['admin'];
 // Filter out by ENV vars / cmd arguments
 
 seeds.forEach((seedName) => {
@@ -19,7 +19,7 @@ seeds.forEach((seedName) => {
 
   pre.then(() => seeder.seed())
   .then((models) => {
-    models.forEach((model, index) => {
+    models.forEach((model) => {
       model.save().catch((err) => console.error(err));
     });
   });

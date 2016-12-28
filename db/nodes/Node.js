@@ -31,7 +31,7 @@ schema.virtual('continuous').get(() => false);
  * @param  {Conversation} conversation conversation to modify.
  * @return {Promise}
  */
-schema.methods.run = function (message, conversation) {
+schema.methods.run = function (message, conversation) { // eslint-disable-line no-unused-vars
   stathat.count('node executed~total,default', 1);
   return new Promise((resolve) => resolve());
 };

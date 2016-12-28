@@ -13,7 +13,6 @@ const schema = new mongo.Schema({
   next: {
     type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
-    required: true,
   },
 
   /**

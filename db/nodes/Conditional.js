@@ -22,7 +22,6 @@ const schema = new mongo.Schema({
   pass: {
     type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
-    required: true,
   },
 
   /**
@@ -31,7 +30,6 @@ const schema = new mongo.Schema({
   fail: {
     type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
-    required: true,
   },
 }, {
   discriminatorKey: 'node',
@@ -55,6 +53,7 @@ schema.methods.run = function (message, conversation) {
   const conditional = new Promise((resolve) => {
     const passedTest = this.testFor === message.response.text;
     conversation.pointer = passedTest ? this.pass : this.fail;
+
     resolve();
   });
 

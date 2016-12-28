@@ -19,7 +19,7 @@ const schema = new mongo.Schema({
    */
   entry: {
     type: mongo.Schema.Types.ObjectId,
-    ref: 'Entry',
+    ref: 'Node',
     required: true,
   },
 
@@ -65,9 +65,6 @@ schema.virtual('messages', {
 schema.statics.populationFields = [
   {
     path: 'entry',
-    populate: {
-      path: 'start',
-    },
   },
   {
     path: 'user',
@@ -93,7 +90,7 @@ schema.statics.getUsersActiveConversation = function (userId) {
 /**
  * Create a new conversation for the given user & entry.
  * @param  {User} user
- * @param  {Entry} entry
+ * @param  {Node} entry
  * @return {Promise}
  */
 schema.statics.createFromEntry = function (user, entry) {
@@ -121,17 +118,18 @@ schema.methods.loadPointer = function () {
  * Update the conversation pointer based on the supplied message.
  *
  * @param  {Message} message
+ * @param  {String}  recursivePointer - Used internally by the function.
  * @return {Promise}
  */
-schema.methods.updatePointer = function (message) {
+schema.methods.updatePointer = function (message, recursivePointer) {
   const scope = {};
 
   return this.loadPointer()
   .then((pointer) => {
     if (pointer) return pointer;
 
-    this.pointer = this.entry.start;
-    return this.loadPointer();
+    this.pointer = this.entry;
+    return this.save().then(this.loadPointer.bind(this));
   })
   .then((pointer) => {
     scope.continuous = pointer.continuous;
@@ -139,13 +137,16 @@ schema.methods.updatePointer = function (message) {
   })
   .then(pointer => pointer.run(message, this))
   .then((response) => {
+    this.markModified('session');
     scope.response = response;
     return this.save().catch(err => console.error(err));
   })
-  .then(() => this.loadPointer())
-  .then((pointer) => {
+  .then(() => {
     if (scope.continuous) {
-      return this.updatePointer(message);
+      const pointer = this.pointer.toString();
+      // This prevents an infinite recursive loop from happening.
+      if (recursivePointer && recursivePointer === pointer) return scope.response;
+      return this.updatePointer(message, pointer);
     }
 
     return scope.response;
@@ -159,5 +160,4 @@ module.exports = Conversation;
 
 // Schema Dependencies
 require('./User');
-require(`${global.entries}`);
 require(`${global.nodes}`);

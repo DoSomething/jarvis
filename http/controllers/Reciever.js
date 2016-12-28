@@ -36,10 +36,9 @@ function createMessage(text, user) {
 router.post('/', (req, res) => {
   stathat.count('message recieved~total,test', 1);
 
-  const text = req.body.text;
+  const text = req.body.text || '';
   const email = req.body.email;
 
-  if (!text) return res.status(400).send('Missing text');
   if (!email) return res.status(400).send('Missing email');
 
   const scope = {

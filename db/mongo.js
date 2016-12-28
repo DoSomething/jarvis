@@ -4,7 +4,7 @@ const console = require('keypunch');
 const stathat = require('../lib/stathat');
 
 const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {

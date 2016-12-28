@@ -28,7 +28,7 @@ const schema = new mongo.Schema({
     },
   ],
 }, {
-  _id : false
+  _id: false,
 });
 
 const model = mongo.mongoose.model('Response', schema);

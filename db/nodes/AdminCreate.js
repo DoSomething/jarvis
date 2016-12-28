@@ -6,7 +6,7 @@ const Node = require('./Node');
 const Response = require(`${global.models}/Response`).model;
 const stathat = require(`${global.root}/lib/stathat`);
 const helpers = require(`${global.root}/util/helpers`);
-const admin = require(`${global.root}/config/admin`);
+const nodes = require(`${global.root}/config/nodes`);
 
 const schema = new mongo.Schema({}, {
   discriminatorKey: 'node',
@@ -18,19 +18,6 @@ const schema = new mongo.Schema({}, {
 schema.virtual('continuous').get(() => false);
 
 /**
- * Get a message containing each node type.
- * @return {Response}
- */
-function getTypes() {
-  let text = 'Please reply with one of the following types...\n';
-  helpers.getCreatableNodeTypes().forEach((type) => {
-    text += `- ${type}\n`;
-  });
-
-  return new Response({ text });
-}
-
-/**
  * Gets a field the admin must fill out.
  * Determines the field based on the index & type.
  * @param {int} index
@@ -38,8 +25,8 @@ function getTypes() {
  * @return {Response}
  */
 function getField(index, type) {
-  const field = admin[type].fill[index];
-  const text = `[*${field.title}*] ${field.description}. (${index}/${admin[type].fill.length})`;
+  const field = nodes[type].fill[index];
+  const text = `[*${field.name}*] ${field.description}. (${index + 1}/${nodes[type].fill.length})`;
 
   return new Response({ text });
 }
@@ -55,54 +42,62 @@ function getField(index, type) {
 schema.methods.run = function (message, conversation) {
   stathat.count('node executed~total,admin create', 1);
 
+  const msg = message.response.text;
+
   if (typeof conversation.session.adminCreate === 'undefined') {
-    conversation.session.adminCreate = {};
+    conversation.session.adminCreate = {
+      type: null,
+      fieldIndex: 0, // Easier than calculating total root + nested fields
+      fields: {},
+    };
   }
 
   const session = conversation.session.adminCreate;
-  const msg = message.response.text;
-
-  let type = session.type;
-  let fields = session.fields;
-  let fieldIndex = session.fieldIndex;
 
   const route = new Promise((resolve) => {
-    if (!type) {
+    if (!session.type) {
       if (helpers.isValidCreatableNodeType(msg)) {
-        type = msg;
-        fieldIndex = 0;
-        fields = {};
-
-        resolve(getField(fieldIndex, type));
+        session.type = msg;
+        resolve(getField(session.fieldIndex, session.type));
       } else {
-        resolve(getTypes());
+        resolve(helpers.getCreatableNodeTypesResponse());
       }
 
       return;
     }
 
-    if (Object.keys(fields.length) !== admin[type].fill.length) {
-      const field = admin[type][fieldIndex];
+    const form = nodes[session.type];
+
+    if (session.fieldIndex <= form.fill.length - 1) {
+      const field = form.fill[session.fieldIndex];
       const key = field.name;
       const value = field.onSubmit(msg);
 
       if (field.parent) {
-        fields[field.parent][key] = value;
+        if (typeof session.fields[field.parent] === 'undefined') {
+          session.fields[field.parent] = {};
+        }
+
+        session.fields[field.parent][key] = value;
       } else {
-        fields[key] = value;
+        session.fields[key] = value;
       }
 
-      fieldIndex++;
+      session.fieldIndex = session.fieldIndex + 1;
 
-      resolve(getField(fieldIndex, type));
-      return;
+      if (session.fieldIndex <= form.fill.length - 1) {
+        resolve(getField(session.fieldIndex, session.type));
+      } else {
+        const model = new nodes[session.type].Instance(session.fields);
+
+        model.save()
+        .then(() => resolve(new Response({ text: 'Done!' })))
+        .catch(err => {
+          console.error(err);
+          resolve(new Response({ text: `Error: ${err.message}` }));
+        });
+      }
     }
-
-    const model = new admin[type].Instance(fields);
-
-    model.save()
-    .then(() => resolve(new Response({ text: 'Done!' })))
-    .catch(err => console.error(err));
   });
 
   route.catch(err => console.error(err));
