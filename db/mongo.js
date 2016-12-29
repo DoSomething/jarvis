@@ -4,6 +4,9 @@ const console = require('keypunch');
 const stathat = require('../lib/stathat');
 
 const mongoose = require('mongoose');
+
+if (process.env.DEBUG_MONGO) mongoose.set('debug', true);
+
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI);
 

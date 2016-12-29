@@ -129,7 +129,7 @@ schema.methods.updatePointer = function (message, recursivePointer) {
     if (pointer) return pointer;
 
     this.pointer = this.entry;
-    return this.save().then(this.loadPointer.bind(this));
+    return this.save().then(() => this.loadPointer());
   })
   .then((pointer) => {
     scope.continuous = pointer.continuous;

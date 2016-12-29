@@ -5,12 +5,12 @@ const assert = require('chai').assert;
 const Conversation = require(`${global.models}/Conversation`);
 const User = require(`${global.models}/User`);
 const Node = require(`${global.nodes}/Node`);
+const PrintNode = require(`${global.nodes}/Print`);
 const Message = require(`${global.models}/Message`);
 
-const testUser = new User({});
-const testNode = new Node({title: 'test'});
-
 describe('conversation model', function() {
+  const testUser = new User({});
+  const testNode = new Node({title: 'test'});
   const convo = new Conversation({
     user: testUser,
     entry: testNode,
@@ -64,32 +64,79 @@ describe('conversation model', function() {
 
 describe('conversation functionality', function() {
   it ('should get the active conversation', function() {
+    const user = new User({});
+    const node = new Node({title: 'test'});
+
     const convo1 = new Conversation({
-      user: testUser,
-      entry: testNode,
+      user,
+      entry: node,
     });
 
     const convo2 = new Conversation({
-      user: testUser,
-      entry: testNode,
+      user: user,
+      entry: node,
     });
 
     return convo1.save()
     .then(convo2.save)
-    .then(() => Conversation.getUsersActiveConversation(testUser._id))
+    .then(() => Conversation.getUsersActiveConversation(user._id))
     .then((activeConvo) => {
       assert.equal(activeConvo._id.toString(), convo2._id.toString(), 'Active conversation retrieved');
     });
   });
 
   it ('should create a conversation', function() {
-    return testUser.save().then(testNode.save)
-    .then(() => Conversation.createFromEntry(testUser, testNode))
+    const user = new User({});
+    const node = new Node({title: 'test'});
+
+    return user.save().then(node.save)
+    .then(() => Conversation.createFromEntry(user, node))
     .then((convo) => {
       assert.isObject(convo, 'Convo is defined');
-      assert.equal(convo.user._id.toString(), testUser._id.toString(), 'user id matches');
-      assert.equal(convo.entry._id.toString(), testNode._id.toString(), 'entry id matches');
+      assert.equal(convo.user._id.toString(), user._id.toString(), 'user id matches');
+      assert.equal(convo.entry._id.toString(), node._id.toString(), 'entry id matches');
       assert.isNull(convo.pointer, 'pointer is null');
     });
   });
+
+  it ('should load the pointer', function() {
+    const user = new User({});
+    const node = new Node({title: 'test'});
+
+    const convo = new Conversation({
+      user,
+      entry: node,
+      pointer: node,
+    });
+
+    return user.save().then(node.save)
+    .then(() => convo.loadPointer())
+    .then((pointer) => {
+      assert.equal(pointer._id.toString(), node._id.toString(), 'Node id\'s match');
+    });
+  });
+
+  it ('should return a message & update the pointer', function() {
+    const user = new User({});
+    const node2 = new Node({title: 'test'});
+    const node1 = new PrintNode({title: 'test', output: {text: 'blah'}, next: node2});
+    const message = new Message({});
+
+    return user.save().then(node1.save).then(node2.save)
+    .then(() => Conversation.createFromEntry(user, node1))
+    .then((convo) => {
+      convo.updatePointer(message)
+      .then((response) => {
+        assert.isDefined(response, 'Response returned');
+        assert.equal(response.text, 'blah', 'Correct text in response');
+      });
+    });
+  });
+
+  // tests to write
+  // ---
+  // does it return a message for a basic node, update the pointer
+  // does continuous work
+  // does it get trapped in an infinite continuous loop
+  // does the session get saved
 });

@@ -29,7 +29,7 @@ function getFieldLinkMenu(session, node) {
       let msg = 'Please select a field...\n';
 
       baseNode.attach.forEach((field, index) => {
-        msg += `${index + 1}) ${field.name} - ${field.description}\n`;
+        msg += `${index + 1}) ${field.name} - ${field.description}\n\n`;
       });
 
       return msg;
@@ -115,9 +115,7 @@ function getResponse(session, msg) {
         if (msg === 'y') {
           Node.findOne({ _id: session.point['1']._id }).exec()
           .then((node) => {
-            console.log(node);
             node[session.field.name] = session.point['2']._id;
-            console.log(node);
             return node.save().catch(err => console.error(err));
           })
           .then(() => resolve(new Response({ text: 'Done.' })))

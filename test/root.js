@@ -2,7 +2,11 @@ require('dotenv').config();
 
 if (process.env.MONGODB_TEST_URI) process.env.MONGODB_URI = process.env.MONGODB_TEST_URI;
 
-process.env.LOG_LEVEL = 4;
+// Disable this if you're trying to debug while writing the test.
+// process.env.LOG_LEVEL = 4;
+
+// Enable this if you need further debugging
+// process.env.DEBUG_MONGO = true
 
 require('../util/pathHelpers');
 

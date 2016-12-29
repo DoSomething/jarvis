@@ -66,9 +66,9 @@ schema.pre('validate', function (next) {
   const protocol = this.protocol;
   const active = true;
 
-  Node.findOne({ keyword, protocol, active }).exec()
-  .then((dupe) => {
-    if (dupe) {
+  Node.find({ keyword, protocol, active }).exec()
+  .then((dupes) => {
+    if (dupes && dupes.length > 1) {
       next(new Error('Duplicate active keyword'));
     } else {
       next();

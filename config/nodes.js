@@ -4,6 +4,7 @@ const Print = require(`${global.nodes}/Print`);
 const Keyword = require(`${global.nodes}/Keyword`);
 const Conditional = require(`${global.nodes}/Conditional`);
 const Segment = require(`${global.nodes}/Segment`);
+const Signup = require(`${global.nodes}/Signup`);
 
 /**
  * Default submission handler.
@@ -115,5 +116,26 @@ module.exports = {
       },
     ],
     Instance: Segment,
+  },
+  signup: {
+    fill: [
+      {
+        name: 'title',
+        description: 'A descriptive name of this node',
+        onSubmit: defaultSubmit,
+      },
+      {
+        name: 'campaignId',
+        description: 'What is the ID of this campaign?',
+        onSubmit: defaultSubmit,
+      },
+    ],
+    attach: [
+      {
+        name: 'next',
+        description: 'Node that should run after the signup is complete',
+      },
+    ],
+    Instance: Signup,
   },
 };

@@ -3,8 +3,8 @@
 const console = require('keypunch');
 const mongo = require('../mongo');
 const Node = require('./Node');
-const Segment = require(`${global.models}/Segment`);
 const stathat = require(`${global.root}/lib/stathat`);
+const phoenix = require(`${global.root}/lib/phoenix`);
 
 const schema = new mongo.Schema({
   /**
@@ -16,13 +16,11 @@ const schema = new mongo.Schema({
   },
 
   /**
-   * Name of the segment to make.
+   * Id of the campaign to signup for.
    */
-  segmentName: {
+  campaignId: {
     type: String,
     required: true,
-    lowercase: true,
-    trim: true,
   },
 }, {
   discriminatorKey: 'node',
@@ -43,25 +41,22 @@ schema.virtual('continuous').get(() => true);
  * @return {Promise}
  */
 schema.methods.run = function (message, conversation) {
-  stathat.count('node executed~total,segment', 1);
-  const createSegment = new Promise((resolve) => {
+  stathat.count('node executed~total,signup', 1);
+  const postSignup = new Promise((resolve) => {
     if (this.next) conversation.pointer = this.next;
 
-    const segment = new Segment({
-      user: conversation.user,
-      name: this.segmentName,
+    conversation.user.getNorthstarUser()
+    .then(nsUser => phoenix.signup(nsUser.drupal_id, this.campaignId))
+    .then((res) => {
+      resolve();
     });
-
-    segment.save()
-    .then(() => resolve())
-    .catch(err => console.error(err));
   });
 
-  createSegment.catch(err => console.error(err));
+  postSignup.catch(err => console.error(err));
 
-  return createSegment;
+  return postSignup;
 };
 
-const SegmentNode = Node.discriminator('node-segment', schema);
+const SegmentNode = Node.discriminator('node-signup', schema);
 
 module.exports = SegmentNode;
