@@ -6,7 +6,6 @@ const Node = require('./Node');
 const Response = require(`${global.models}/Response`).model;
 const stathat = require(`${global.root}/lib/stathat`);
 const helpers = require(`${global.root}/util/helpers`);
-const nodes = require(`${global.root}/config/nodes`);
 const Conversation = require(`${global.models}/Conversation`);
 
 const schema = new mongo.Schema({}, {
@@ -49,6 +48,8 @@ schema.methods.run = function (message, conversation) {
 
   const session = conversation.session.adminDelete;
 
+  let selection = null;
+
   const route = new Promise((resolve) => {
     switch (session.step) {
       case 0:
@@ -68,7 +69,7 @@ schema.methods.run = function (message, conversation) {
         .then(result => resolve(result.response));
         break;
       case 2:
-        const selection = session.menu[parseInt(msg, 10) - 1];
+        selection = session.menu[parseInt(msg, 10) - 1];
 
         if (selection) {
           session.node = selection;
@@ -76,7 +77,7 @@ schema.methods.run = function (message, conversation) {
           getUsersOnNode(session.node._id).then(resolve);
         } else {
           resolve(new Response({
-            text: 'Invalid selection. Just reply with the number.'
+            text: 'Invalid selection. Just reply with the number.',
           }));
         }
         break;
@@ -86,7 +87,7 @@ schema.methods.run = function (message, conversation) {
             text: 'Ok',
           }));
         } else {
-          Node.find({_id: session.node._id})
+          Node.find({ _id: session.node._id })
           .remove()
           .exec()
           .then(() => {
@@ -96,6 +97,7 @@ schema.methods.run = function (message, conversation) {
 
         session.step++;
         break;
+      default: break;
     }
   });
 

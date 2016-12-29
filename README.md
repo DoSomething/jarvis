@@ -14,11 +14,11 @@ DoSomething.org's natural language interface.
 1. `git clone https://github.com/DoSomething/jarvis.git`
 2. `cd jarvis`
 3. `cp .env.example .env`
-4. `pnm install`
+4. `npm install`
 5. `npm run seed`
 
 # Development
-Use `npm run start` to execute the server, which handles both MongoDB & Jarvis. Jarvis is running behind Nodemon, so any file saves will restart the node server automatically.
+Use `npm run start` to execute both MongoDB & Jarvis. Jarvis is running behind Nodemon, so any file saves will restart the node server automatically.
 
 ## Testing
 Please write tests for all functionality & test before merging your changes.

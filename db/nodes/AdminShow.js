@@ -66,6 +66,7 @@ schema.methods.run = function (message, conversation) {
   }
 
   const session = conversation.session.adminShow;
+  let selection = null;
 
   const route = new Promise((resolve) => {
     switch (session.step) {
@@ -86,19 +87,19 @@ schema.methods.run = function (message, conversation) {
         .then(result => resolve(result.response));
         break;
       case 2:
-        const selection = session.menu[parseInt(msg, 10) - 1];
+        selection = session.menu[parseInt(msg, 10) - 1];
 
         if (!selection) {
           resolve(new Response({
-            text: 'Invalid selection. Just reply with the number.'
+            text: 'Invalid selection. Just reply with the number.',
           }));
         }
 
         session.step++;
         showNode(selection).then(resolve);
         break;
+      default: break;
     }
-
   });
 
   route.catch(err => console.error(err));

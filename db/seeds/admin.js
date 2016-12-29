@@ -87,7 +87,7 @@ module.exports = {
       keyword: 'delete',
       protocol: 'admin',
       start: deleteNode,
-    })
+    });
 
     const show = new AdminShow({
       title: 'Admin show',

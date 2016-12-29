@@ -23,10 +23,10 @@ schema.virtual('continuous').get(() => false);
  * @return {String}
  */
 function getAllFields(type) {
-  let text = 'Select a field...\n' +
+  const text = `Select a field...\n${
     nodes[type].fill
     .map((field, index) => `${index + 1}) *${field.name}* - ${field.description}\n`)
-    .join(',');
+    .join(',')}`;
 
   return text;
 }
@@ -58,10 +58,12 @@ schema.methods.run = function (message, conversation) {
 
   let selection = null;
   let text = '';
+  let field = null;
+  let value = null;
 
   const route = new Promise((resolve) => {
     console.log(session.step);
-    switch(session.step) {
+    switch (session.step) {
       case 0:
         session.step++;
         resolve(new Response({ text: 'What is the title of the node?' }));
@@ -95,7 +97,7 @@ schema.methods.run = function (message, conversation) {
       case 3:
         session.fieldIndex = parseInt(msg, 10) - 1;
         selection = nodes[session.type].fill[session.fieldIndex];
-        text = 'Invalid selection. Just reply with the number.'
+        text = 'Invalid selection. Just reply with the number.';
 
         if (selection) {
           session.step++;
@@ -105,8 +107,8 @@ schema.methods.run = function (message, conversation) {
         resolve(new Response({ text }));
         break;
       case 4:
-        const field = nodes[session.type].fill[session.fieldIndex];
-        const value = field.onSubmit(msg);
+        field = nodes[session.type].fill[session.fieldIndex];
+        value = field.onSubmit(msg);
 
         Node.findOne({ _id: session.node._id }).exec()
         .then((node) => {
@@ -116,6 +118,7 @@ schema.methods.run = function (message, conversation) {
         .then(() => resolve(new Response({ text: 'Done!' })))
         .catch(err => resolve(new Response({ text: err.message })));
         break;
+      default: break;
     }
   });
 

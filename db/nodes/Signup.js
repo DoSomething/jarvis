@@ -47,9 +47,7 @@ schema.methods.run = function (message, conversation) {
 
     conversation.user.getNorthstarUser()
     .then(nsUser => phoenix.signup(nsUser.drupal_id, this.campaignId))
-    .then((res) => {
-      resolve();
-    });
+    .then(() => resolve());
   });
 
   postSignup.catch(err => console.error(err));

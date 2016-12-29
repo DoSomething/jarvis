@@ -120,14 +120,14 @@ module.exports.isValidCreatableNodeType = type => typeof nodes[type] !== 'undefi
  * @param {String} query
  * @return {Promise}
  */
-module.exports.getTitleMenu = (query) => {
-  return Node.find({ $text: { $search: query } }).exec()
+module.exports.getTitleMenu = (query) =>
+  Node.find({ $text: { $search: query } }).exec()
   .then((menu) => {
     if (!menu || menu.length === 0) {
       return {
         menu: null,
         response: new Response({
-          text: 'No nodes were found. Try a different title?'
+          text: 'No nodes were found. Try a different title?',
         }),
       };
     }
@@ -143,4 +143,3 @@ module.exports.getTitleMenu = (query) => {
       response: new Response({ text: msg }),
     };
   });
-}
