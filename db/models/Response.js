@@ -21,7 +21,6 @@ const schema = new mongo.Schema({
    */
   media: {
     type: String,
-    lowercase: true,
     trim: true,
     default: '',
   },

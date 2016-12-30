@@ -26,7 +26,7 @@ function getAllFields(type) {
   const text = `Select a field...\n${
     nodes[type].fill
     .map((field, index) => `${index + 1}) *${field.name}* - ${field.description}\n`)
-    .join(',')}`;
+    .join('')}`;
 
   return text;
 }

@@ -12,10 +12,11 @@ const northstar = require('../../lib/northstar');
 const User = require('../../db/Models/User');
 const Message = require('../../db/models/Message');
 
-function createMessage(text, user) {
+function createMessage(text, media, user) {
   const message = new Message({
     response: {
       text,
+      media: media || '',
     },
     platform: 'twilio',
     client: {
@@ -41,7 +42,7 @@ router.post('/', twilio.middleware, (req, res) => {
   User.findOrCreate(mobile, 'mobile')
   .then((user) => {
     scope.user = user;
-    return createMessage(req.body.Body, user);
+    return createMessage(req.body.Body, req.body.MediaUrl0, user);
   })
   .then((message) => {
     scope.message = message;

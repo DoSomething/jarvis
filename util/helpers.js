@@ -136,7 +136,7 @@ module.exports.getTitleMenu = (query) =>
     let msg = 'Please select a node...\n';
 
     menu.forEach((node, index) => {
-      msg += `${index + 1}) ${node.title}`;
+      msg += `${index + 1}) ${node.title}\n`;
     });
 
     return {
