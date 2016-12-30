@@ -9,17 +9,15 @@ const Signup = require(`${global.nodes}/Signup`);
 /**
  * Default submission handler.
  * Retun the given input unmodified.
+ *
+ * Originally there were other submission handlers,
+ * however over the course of refactoring they were no longer needed.
+ * I kept this here anyway in the event we do complex input again.
+ *
  * @param  {String} input
  * @return {String}
  */
 const defaultSubmit = input => input;
-
-/**
- * Convert the comma seperated string to an array.
- * @param  {String} input
- * @return {Array}
- */
-const convertStringToArray = input => input.split(',');
 
 module.exports = {
   print: {
@@ -37,8 +35,8 @@ module.exports = {
       },
       {
         name: 'media',
-        description: 'Comma seperated links to images to send',
-        onSubmit: convertStringToArray,
+        description: 'Link of an image to send',
+        onSubmit: defaultSubmit,
         parent: 'output',
       },
     ],

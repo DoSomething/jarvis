@@ -58,10 +58,14 @@ router.post('/', (req, res) => {
   })
   .then(message => {
     let text = helpers.deepGet('response.text', message);
-    let media = helpers.deepGet('response.meda', message);
+    let media = helpers.deepGet('response.media', message);
 
     if (!text) {
       let text = '';
+    }
+
+    if (media) {
+      text += `\n${media}`;
     }
 
     res.send(text);

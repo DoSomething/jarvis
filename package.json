@@ -12,6 +12,7 @@
   "author": "DoSomething.org",
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.7.20",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "botkit": "^0.4.3",

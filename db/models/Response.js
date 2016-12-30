@@ -19,14 +19,12 @@ const schema = new mongo.Schema({
   /**
    * Contains strings of Media URI's.
    */
-  media: [
-    {
-      type: String,
-      lowercase: true,
-      trim: true,
-      default: [],
-    },
-  ],
+  media: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    default: '',
+  },
 }, {
   _id: false,
 });
