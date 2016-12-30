@@ -62,7 +62,6 @@ schema.methods.run = function (message, conversation) {
   let value = null;
 
   const route = new Promise((resolve) => {
-    console.log(session.step);
     switch (session.step) {
       case 0:
         session.step++;

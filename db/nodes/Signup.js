@@ -55,6 +55,6 @@ schema.methods.run = function (message, conversation) {
   return postSignup;
 };
 
-const SegmentNode = Node.discriminator('node-signup', schema);
+const SignupNode = Node.discriminator('node-signup', schema);
 
-module.exports = SegmentNode;
+module.exports = SignupNode;

@@ -89,6 +89,7 @@ schema.methods.attachConversation = function (conversation) {
  * @param  {Conversation} conversation
  * @return {Promise}
  */
+// TODO: Can we delete this..?
 schema.statics.findLastConversationMessage = function (conversation) {
   return this.findOne({ conversationId: conversation._id })
   .sort({ createdAt: -1 })
