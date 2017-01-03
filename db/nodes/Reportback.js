@@ -70,8 +70,10 @@ function getResponseForStep(step, config) {
 }
 
 function collectField(msg, reportback, config, step) {
-  const hasWhy = reportback.why_participated &&
-    reportback.why_participated !== config.defaultParticipated;
+  const hasWhy = typeof reportback.why_participated !== 'undefied' &&
+    reportback.why_participated !== config.defaultParticipated &&
+    reportback.why_participated !== null;
+
   const rb = {
     quantity: reportback.quantity || 0,
     why_participated: reportback.why_participated || config.defaultParticipated,
@@ -181,10 +183,12 @@ schema.methods.run = function (message, conversation) {
         }
       }
 
-      console.log('from RB', continuousOverride);
-
       return conversation.user.save()
-      .then(() => resolve(getResponseForStep(profileMap.step, this), continuousOverride))
+      .then(() => {
+        const res = getResponseForStep(profileMap.step, this);
+        res.continuous = continuousOverride;
+        resolve(res);
+      })
       .catch(err => console.error(err));
     })
     .catch(err => console.error(err));
