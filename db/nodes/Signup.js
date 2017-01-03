@@ -8,9 +8,27 @@ const phoenix = require(`${global.root}/lib/phoenix`);
 
 const schema = new mongo.Schema({
   /**
-   * The node that always comes next.
+   * The node that comes after signup.
    */
-  next: {
+  complete: {
+    type: mongo.Schema.Types.ObjectId,
+    ref: 'Node',
+  },
+
+  /**
+   * The node that comes next if the
+   * user is already signed up.
+   */
+  exists: {
+    type: mongo.Schema.Types.ObjectId,
+    ref: 'Node',
+  },
+
+  /**
+   * If we encounter an error while making the signup,
+   * go to this node.
+   */
+  error: {
     type: mongo.Schema.Types.ObjectId,
     ref: 'Node',
   },
@@ -33,8 +51,7 @@ schema.virtual('continuous').get(() => true);
 
 /**
  * Update the conversation pointer to the next node.
- * Creates a segment for the given user & this nodes
- * segment name.
+ * Create a Phoenix signup for the user.
  *
  * @param  {Message} message User message to parse.
  * @param  {Conversation} conversation conversation to modify.
@@ -42,12 +59,33 @@ schema.virtual('continuous').get(() => true);
  */
 schema.methods.run = function (message, conversation) {
   stathat.count('node executed~total,signup', 1);
-  const postSignup = new Promise((resolve) => {
-    if (this.next) conversation.pointer = this.next;
+  const scope = {};
 
+  const postSignup = new Promise((resolve) => {
     conversation.user.getNorthstarUser()
-    .then(nsUser => phoenix.signup(nsUser.drupal_id, this.campaignId))
-    .then(() => resolve());
+    .then((nsUser) => {
+      const drupalId = nsUser.data.drupal_id;
+      scope.drupalId = drupalId;
+
+      return phoenix.activity(drupalId, this.campaignId, `jarvis-${message.platform}`);
+    })
+    .then((activity) => {
+      if (!activity || activity instanceof Error) return this.error;
+      if (activity.signed_up) return this.exists;
+
+      return phoenix.signup(scope.drupal_id, this.campaignId)
+      .then((signup) => {
+        if (signup &&
+          Array.isArray(signup) &&
+          signup[0] !== false) return this.complete;
+
+        return this.error;
+      });
+    })
+    .then((pointer) => {
+      if (pointer) conversation.pointer = pointer;
+      resolve();
+    });
   });
 
   postSignup.catch(err => console.error(err));

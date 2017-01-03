@@ -136,9 +136,11 @@ schema.methods.updatePointer = function (message, recursivePointer) {
     return pointer;
   })
   .then(pointer => pointer.run(message, this))
-  .then((response) => {
+  .then((response, continuousOverride) => {
     this.markModified('session');
     scope.response = response;
+    if (continuousOverride) scope.continuous = true;
+    console.log('from convo', continuousOverride);
     return this.save().catch(err => console.error(err));
   })
   .then(() => {

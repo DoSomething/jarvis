@@ -29,7 +29,7 @@ function getFieldLinkMenu(session, node) {
       let msg = 'Please select a field...\n';
 
       baseNode.attach.forEach((field, index) => {
-        msg += `${index + 1}) ${field.name} - ${field.description}\n\n`;
+        msg += `${index + 1}) ${field.name} - ${field.description}\n`;
       });
 
       return msg;

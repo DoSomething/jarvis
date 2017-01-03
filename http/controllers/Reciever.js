@@ -15,13 +15,15 @@ const Message = require(`${global.models}/Message`);
  * Create a Message for the given text & user.
  *
  * @param  {String} text
+ * @param  {String} media
  * @param  {User} user
  * @return Promise
  */
-function createMessage(text, user) {
+function createMessage(text, media, user) {
   const message = new Message({
     response: {
       text,
+      media,
     },
     platform: 'test',
     client: {
@@ -37,6 +39,7 @@ router.post('/', (req, res) => {
   stathat.count('message recieved~total,test', 1);
 
   const text = req.body.text || '';
+  const media = req.body.media;
   const email = req.body.email;
 
   if (!email) return res.status(400).send('Missing email');
@@ -50,7 +53,7 @@ router.post('/', (req, res) => {
   User.findOrCreate(email, 'email')
   .then((user) => {
     scope.user = user;
-    return createMessage(text, user);
+    return createMessage(text, media, user);
   })
   .then((message) => {
     scope.message = message;

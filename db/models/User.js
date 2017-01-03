@@ -41,6 +41,22 @@ const schema = new mongo.Schema({
         default: 0,
       },
     },
+
+    /**
+     * ~Temp.~ storage for messaging initiated reportbacks.
+     * Unfortunately the Phoenix api is quite buggy with pulling user activity.
+     *
+     * When Rogue is fully operational & ready for use this
+     * field will probably be deleted.
+     *
+     * Additionally I couldn't use conversation session here.
+     * If the user starts a Reportback & comes back to it later, they should
+     * be able to resume where they left off.
+     */
+    reportbacks: {
+      type: mongo.Schema.Types.Mixed,
+      default: {},
+    }
   },
 }, {
   timestamps: true,

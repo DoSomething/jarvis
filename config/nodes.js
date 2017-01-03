@@ -5,6 +5,7 @@ const Keyword = require(`${global.nodes}/Keyword`);
 const Conditional = require(`${global.nodes}/Conditional`);
 const Segment = require(`${global.nodes}/Segment`);
 const Signup = require(`${global.nodes}/Signup`);
+const Reportback = require(`${global.nodes}/Reportback`);
 
 /**
  * Default submission handler.
@@ -130,10 +131,68 @@ module.exports = {
     ],
     attach: [
       {
-        name: 'next',
+        name: 'complete',
         description: 'Node that should run after the signup is complete',
+      },
+      {
+        name: 'exists',
+        description: 'Node that should run if the user already has a signup',
+      },
+      {
+        name: 'error',
+        description: 'Node that should run if the system encounters an error',
       },
     ],
     Instance: Signup,
+  },
+  reportback: {
+    fill: [
+      {
+        name: 'title',
+        description: 'A descriptive name of this node',
+        onSubmit: defaultSubmit,
+      },
+      {
+        name: 'campaignId',
+        description: 'What is the ID of this campaign?',
+        onSubmit: defaultSubmit,
+      },
+      {
+        name: 'defaultParticipated',
+        description: 'Default "why participated". eg: "I loved doing this campaign!"',
+        onSubmit: defaultSubmit,
+      },
+      {
+        name: 'text',
+        description: 'Text to ask for a photo',
+        parent: 'askForPhoto',
+        onSubmit: defaultSubmit,
+      },
+      {
+        name: 'text',
+        description: 'Text to ask for the quantity',
+        parent: 'askForQuantity',
+        onSubmit: defaultSubmit,
+      },
+      {
+        name: 'text',
+        description: 'Text to ask for the why participated',
+        parent: 'askForWhy',
+        onSubmit: defaultSubmit,
+      },
+      {
+        name: 'text',
+        description: 'Text for when the user encounters an error',
+        parent: 'error',
+        onSubmit: defaultSubmit,
+      },
+    ],
+    attach: [
+      {
+        name: 'next',
+        description: 'Node that should run after the reportback is complete',
+      },
+    ],
+    Instance: Reportback,
   },
 };
