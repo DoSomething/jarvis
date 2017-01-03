@@ -16,6 +16,6 @@ require('./Conditional');
 require('./Keyword');
 require('./Node');
 require('./Print');
-require('./Reportback')
+require('./Reportback');
 require('./Segment');
 require('./Signup');

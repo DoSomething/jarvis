@@ -70,7 +70,7 @@ function getResponseForStep(step, config) {
 }
 
 function collectField(msg, reportback, config, step) {
-  const hasWhy = typeof reportback.why_participated !== 'undefied' &&
+  const hasWhy = typeof reportback.why_participated !== 'undefined' &&
     reportback.why_participated !== config.defaultParticipated &&
     reportback.why_participated !== null;
 
@@ -134,7 +134,7 @@ schema.methods.run = function (message, conversation) {
         };
       }
 
-       return conversation.user.profile.reportbacks[this.campaignId].id;
+      return conversation.user.profile.reportbacks[this.campaignId].id;
     })
     .then(reportbackId => phoenix.getReportback(reportbackId))
     .then((reportback) => {

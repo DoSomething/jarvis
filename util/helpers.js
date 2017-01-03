@@ -73,7 +73,6 @@ module.exports.routeRequest = (scope) => // eslint-disable-line no-unused-expres
  * @param  {Object} container Object to search.
  * @return {Mixed}            Returns the value if found, otherwise undefined.
  */
-//TODO: Can we get rid of this?
 module.exports.deepGet = (path, container) => {
   if (typeof container === undefined) return undefined;
 

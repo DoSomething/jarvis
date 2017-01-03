@@ -56,7 +56,7 @@ const schema = new mongo.Schema({
     reportbacks: {
       type: mongo.Schema.Types.Mixed,
       default: {},
-    }
+    },
   },
 }, {
   timestamps: true,
