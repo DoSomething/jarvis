@@ -36,7 +36,7 @@ function showNode(node) {
 
       Node.findOne({ _id }).exec().then((attachment) => {
         completedAttachments++;
-        text += `${attachmentName} --> ${attachment.title}\n`;
+        text += `${attachmentName} --> ${attachment ? attachment.title : 'undefined'}\n`;
 
         if (completedAttachments >= form.attach.length) {
           resolve(new Response({ text }));
