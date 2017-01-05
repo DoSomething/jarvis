@@ -1,16 +1,16 @@
 'use strict';
 
 const console = require('keypunch');
-const stathat = require('../../lib/stathat');
-const helpers = require('../../util/helpers');
+const stathat = require(`${global.root}/lib/stathat`);
+const helpers = require(`${global.root}/util/helpers`);
 
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-const twilio = require('../../lib/twilio');
+const twilio = require(`${global.root}/lib/twilio`);
 
-const User = require('../../db/Models/User');
-const Message = require('../../db/models/Message');
+const User = require(`${global.models}/User`);
+const Message = require(`${global.models}/Message`);
 
 function createMessage(text, media, user) {
   const message = new Message({
