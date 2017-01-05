@@ -28,7 +28,8 @@ function createMessage(text, media, user) {
   return message.lowercaseResponse().catch(err => console.error(err));
 }
 
-router.post('/', twilio.middleware, (req, res) => {
+// router.post('/', twilio.middleware, (req, res) => {
+router.post('/', (req, res) => {
   stathat.count('message recieved~total,twilio', 1);
 
   const scope = {
