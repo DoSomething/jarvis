@@ -25,7 +25,7 @@ function createMessage(text, media, user) {
     },
   });
 
-  return message.lowercaseResponse();
+  return message.lowercaseResponse().catch(err => console.error(err));
 }
 
 router.post('/', twilio.middleware, (req, res) => {
@@ -50,7 +50,7 @@ router.post('/', twilio.middleware, (req, res) => {
   })
   .then(message => twilio.sendMessage(message, scope.user))
   .then(() => res.send('ok'))
-  .catch(console.error);
+  .catch(err => console.error(err));
 });
 
 module.exports = router;
