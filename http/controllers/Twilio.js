@@ -1,13 +1,13 @@
+'use strict';
+
 const console = require('keypunch');
 const stathat = require('../../lib/stathat');
 const helpers = require('../../util/helpers');
-const Promise = require('bluebird'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
 const twilio = require('../../lib/twilio');
-const northstar = require('../../lib/northstar');
 
 const User = require('../../db/Models/User');
 const Message = require('../../db/models/Message');

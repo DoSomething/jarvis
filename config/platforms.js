@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = ['mobile_commons', 'test', 'twilio'];
+module.exports = ['mobile_commons', 'test', 'twilio', 'slack'];

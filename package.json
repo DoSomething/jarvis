@@ -12,10 +12,11 @@
   "author": "DoSomething.org",
   "license": "MIT",
   "dependencies": {
+    "@slack/client": "^3.8.1",
     "aws-sdk": "^2.7.20",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
-    "botkit": "^0.4.3",
+    "botkit": "^0.4.6",
     "express": "^4.14.0",
     "forky": "^0.3.0",
     "keypunch": "^1.0.3",

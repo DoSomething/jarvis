@@ -1,2 +1,3 @@
 web: ./node_modules/.bin/nodemon leaders/server.js
+sockets: ./node_modules/.bin/nodemon leaders/sockets.js
 mongo: mongod
